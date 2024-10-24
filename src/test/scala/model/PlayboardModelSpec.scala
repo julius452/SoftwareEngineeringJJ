@@ -4,23 +4,30 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
 
 class PlayboardModelSpec extends AnyWordSpec {
-
   "PlayboardModel" should {
-    "initialize the playboard with start positions" in {
-      val model = new PlayboardModel()
+
+    "initialize the playboard correctly" in {
+      val model = new PlayboardModel
       model.initializePlayboard()
-      model.getPlayboard(0) should be ("ST")
-      model.getPlayboard(10) should be ("ST")
-      model.getPlayboard(20) should be ("ST")
-      model.getPlayboard(30) should be ("ST")
+
+      val expectedPlayboard = Array.fill(40)("00")
+      expectedPlayboard(0) = "ST"
+      expectedPlayboard(10) = "ST"
+      expectedPlayboard(20) = "ST"
+      expectedPlayboard(30) = "ST"
+
+      model.getPlayboard should equal(expectedPlayboard)
     }
 
-    "have all houses initialized with 'HH'" in {
-      val model = new PlayboardModel()
-      model.getHouse1 should be(Array("HH", "HH", "HH", "HH"))
-      model.getHouse2 should be(Array("HH", "HH", "HH", "HH"))
-      model.getHouse3 should be(Array("HH", "HH", "HH", "HH"))
-      model.getHouse4 should be(Array("HH", "HH", "HH", "HH"))
+    "return the correct house arrays" in {
+      val model = new PlayboardModel
+
+      val expectedHouse = Array.fill(4)("HH")
+
+      model.getHouse1 should equal(expectedHouse)
+      model.getHouse2 should equal(expectedHouse)
+      model.getHouse3 should equal(expectedHouse)
+      model.getHouse4 should equal(expectedHouse)
     }
   }
 }
