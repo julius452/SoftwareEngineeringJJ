@@ -5,42 +5,39 @@ import org.scalatest.matchers.should.Matchers._
 import model.PlayboardModel
 import view.PlayboardView
 
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 class PlayboardControllerSpec extends AnyWordSpec {
 
-  // Hilfsmethode zum Abfangen der Konsolenausgabe
-  def captureOutput(testCode: => Unit): String = {
-    val outputStream = new ByteArrayOutputStream()
-    val printStream = new PrintStream(outputStream)
-    val originalOut = System.out
-    try {
-      System.setOut(printStream)
-      testCode
-      printStream.flush()
-      outputStream.toString
-    } finally {
-      System.setOut(originalOut)
-    }
-  }
+  val expectedMessage: String =
+    "Herzlich Willkommen bei unserem tollen Mensch ärgere dich nicht\nHier ist ein erster Entwurf unseres Spielfeldes:\n\n"
+
+  val playboard: Array[String] = Array.fill(40)("00")
+  playboard(0) = "ST"
+  playboard(10) = "ST"
+  playboard(20) = "ST"
+  playboard(30) = "ST"
+
+  val expectedPlayboard: String =
+    "ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00"
+
+  val house1: Array[String] = Array.fill(4)("HH")
+  val house2: Array[String] = Array.fill(4)("HH")
+  val house3: Array[String] = Array.fill(4)("HH")
+  val house4: Array[String] = Array.fill(4)("HH")
+
+  val expectedHouses: String =
+    "\n\nHäuser der Spieler:\nPlayer1 House: HH | HH | HH | HH\nPlayer2 House: HH | HH | HH | HH\nPlayer3 House: HH | HH | HH | HH\nPlayer4 House: HH | HH | HH | HH"
+
 
   "PlayboardController" should {
 
-    "initialize the model and print the board" in {
-      val model = new PlayboardModel()
+    "initialize the playboard correctly" in {
+      val model = new PlayboardModel
       val controller = new PlayboardController(model, PlayboardView)
+      val output = controller.printBoard()
 
-      val output = captureOutput {
-        controller.printBoard()
-      }
+      val expectedOutput = expectedMessage + expectedPlayboard + expectedHouses
 
-      // Überprüfen, ob die korrekten Elemente im Output sind
-      output should include("Herzlich Willkommen bei unserem tollen Mensch ärgere dich nicht")
-      output should include("ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | ST | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00")
-      output should include("Player1 House: HH | HH | HH | HH")
-      output should include("Player2 House: HH | HH | HH | HH")
-      output should include("Player3 House: HH | HH | HH | HH")
-      output should include("Player4 House: HH | HH | HH | HH")
+      output should equal(expectedOutput)
     }
   }
 }
