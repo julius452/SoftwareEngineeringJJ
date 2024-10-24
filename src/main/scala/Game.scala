@@ -7,5 +7,5 @@ object Game extends App{
   val controller = new PlayboardController(model, PlayboardView)
 
   // Starte das Spiel
-  controller.printBoard()
+  print(controller.printBoard())
 }
