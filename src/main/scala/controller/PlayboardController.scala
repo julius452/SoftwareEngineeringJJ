@@ -1,7 +1,7 @@
-package Controller
+package controller
 
-import Model.PlayboardModel
-import View.PlayboardView
+import model.PlayboardModel
+import view.PlayboardView
 
 class PlayboardController (model: PlayboardModel, view: PlayboardView.type) {
   def printBoard(): Unit = {

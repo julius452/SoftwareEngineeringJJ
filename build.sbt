@@ -1,11 +1,12 @@
-ThisBuild / version := "0.1.0-SNAPSHOT"
+import sbt.Keys.libraryDependencies
 
 ThisBuild / scalaVersion := "3.6.1"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "SoftwareEngineeringJJ"
+    name := "SoftwareEngineeringJJ",
+    version := "0.1.0-SNAPSHOT",
+    libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.18",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % "test"
   )
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % "test"

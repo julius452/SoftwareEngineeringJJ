@@ -1,4 +1,4 @@
-package View
+package view
 
 object PlayboardView {
   // Funktion zur Umwandlung in ein 2D-Layout und Ausgabe
