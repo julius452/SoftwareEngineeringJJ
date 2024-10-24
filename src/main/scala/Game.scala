@@ -1,6 +1,6 @@
-import Controller.PlayboardController
-import Model.PlayboardModel
-import View.PlayboardView
+import controller.PlayboardController
+import model.PlayboardModel
+import view.PlayboardView
 
 object Game extends App{
   val model = new PlayboardModel()

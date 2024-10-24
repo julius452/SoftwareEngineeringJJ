@@ -1,4 +1,4 @@
-package Model
+package model
 
 class PlayboardModel {
   // Das Spielfeld und die Häuser, die für jede Instanz unterschiedlich sein können
