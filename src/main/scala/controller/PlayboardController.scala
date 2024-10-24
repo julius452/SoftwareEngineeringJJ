@@ -9,6 +9,6 @@ class PlayboardController (model: PlayboardModel, view: PlayboardView.type) {
     model.initializePlayboard()
 
     // Spielfeld anzeigen
-    view.printBoard(model.getPlayboard, model.getHouse1, model.getHouse2, model.getHouse3, model.getHouse4)
+    print(view.printBoard(model.getPlayboard, model.getHouse1, model.getHouse2, model.getHouse3, model.getHouse4))
   }
 }
