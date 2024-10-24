@@ -1,12 +1,10 @@
 package controller
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
 import model.PlayboardModel
+import org.junit.Assert._
+import org.junit.Test
 import view.PlayboardView
-
-class PlayboardControllerSpec extends AnyWordSpec {
-
+class PlayBoardControllerJUnit {
   val expectedMessage: String =
     "Herzlich Willkommen bei unserem tollen Mensch ärgere dich nicht\nHier ist ein erster Entwurf unseres Spielfeldes:\n\n"
 
@@ -22,15 +20,14 @@ class PlayboardControllerSpec extends AnyWordSpec {
     "\n\nHäuser der Spieler:\nPlayer1 House: HH | HH | HH | HH\nPlayer2 House: HH | HH | HH | HH\nPlayer3 House: HH | HH | HH | HH\nPlayer4 House: HH | HH | HH | HH"
 
 
-  "PlayboardController" should {
-    "initialize the playboard correctly" in {
+  @Test
+    def testPrintBoard(): Unit = {
       val model = new PlayboardModel
       val controller = new PlayboardController(model, PlayboardView)
       val output = controller.printBoard()
 
       val expectedOutput = expectedMessage + expectedPlayboard + expectedHouses
 
-      output should equal(expectedOutput)
+      assertEquals(expectedOutput, output)
     }
-  }
 }
