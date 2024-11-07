@@ -1,25 +1,27 @@
 package controller
 
-import model.{GameBoard, Piece, GameState}
+import model.{GameBoard, Piece, GameState, Field}
 
 class GameBoardController {
-  def initializeGameBoard(): GameBoard = {
-    val board = Array.fill(40)("00")
+  val fieldController = new FieldController()
 
-    // Startfelder
-    for (i <- 0 to 3) {
-      board(i * 10) = "ST"
-      board(i * 10) = "ST"
-      board(i * 10) = "ST"
-      board(i * 10) = "ST"
+  def initializeGameBoard(): GameBoard = {
+    val board = new Array[Field](40)
+
+    for (i <- 0 until 40) {
+      if (i % 10 == 0) {
+        board(i) = fieldController.initializeStartField(i)
+      } else {
+        board(i) = fieldController.initializeGameField(i)
+      }
     }
+
     return GameBoard(board)
   }
 
   def movePiece(gameState: GameState, piece: Piece, steps: Int): Unit = {
     if (piece.isOnField) {
       val fields = gameState.board.fields
-      fields(piece.position) = "00"
 
       val newTraveledFields = piece.traveledFields + steps
 
@@ -28,28 +30,31 @@ class GameBoardController {
         val restSteps = newTraveledFields - 39
 
         if (restSteps <= piece.player.house.length) {
-          piece.player.house(restSteps-1) = s"${piece.player.id}${piece.id}"
+          var landingField = piece.player.house(restSteps-1)
+          piece.field = landingField
+
           piece.isInHome = true
           piece.isOnField = false
-          fields(piece.position) = "00"
           println(s"Piece ${piece.id} für Spieler ${piece.player.id} ist im Haus angekommen an Stelle: $restSteps.")
         }
 
       } else {
-        val newIndex = (piece.position + steps) % fields.length
-        fields(newIndex) = s"${piece.player.id + piece.id}"
-        piece.position = newIndex
+        val newIndex = (piece.field.position + steps) % fields.length
+        val landingField = fields(newIndex)
+        piece.field = landingField
+
         piece.traveledFields = newTraveledFields
       }
     }
     if (!piece.isOnField) {
       val start = piece.player.startPosition
       val fields = gameState.board.fields
-      fields(start) = s"${piece.player.id + piece.id}"
+
+      val landingField = fields(start)
+      piece.field = landingField
 
       piece.traveledFields = 0
       piece.isOnField = true
-      piece.position = start
     }
   }
 }

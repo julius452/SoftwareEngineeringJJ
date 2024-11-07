@@ -1,4 +1,4 @@
 package model
 
-case class GameBoard(var fields: Array[String])
+case class GameBoard(var fields: Array[Field])
 

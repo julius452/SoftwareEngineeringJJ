@@ -50,7 +50,7 @@ class ConsoleView {
     for (piece <- player.pieces) {
       if (piece.isOnField) {
         sb.append("\t")
-        sb.append(s"Figur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.position} kann ziehen")
+        sb.append(s"Figur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.field.position} kann ziehen")
         sb.append("\n")
       } else {
         sb.append("\t")
@@ -68,28 +68,60 @@ class ConsoleView {
     sb.append("Spielfeld:")
     sb.append("\n")
     sb.append("\t")
-    val boardString = gameState.board.fields.mkString(" | ")
+
+    val boardFields = new Array[String](40)
+
+    for (i <- 0 until 40) {
+      val field = gameState.board.fields(i)
+
+      if (field.isOccupied) {
+        boardFields(i) = s"${field.piece.get.player.id + field.piece.get.id}"
+      } else {
+        boardFields(i) = s"${field.value}"
+      }
+    }
+
+    val boardString = boardFields.mkString(" | ")
     sb.append(boardString)
     sb.append("\n")
 
     sb.append("Haus:")
     sb.append("\n")
     sb.append("\t")
-    val houseString = gameState.currentPlayer.house.mkString(" | ")
+
+    val houseFields = new Array[String](4)
+    for (i <- 0 until 4) {
+      val field = gameState.currentPlayer.house(i)
+
+      if (field.isOccupied) {
+        houseFields(i) = s"${field.piece.get.player.id + field.piece.get.id}"
+      } else {
+        houseFields(i) = s"${field.value}"
+      }
+    }
+
+    val houseString = houseFields.mkString(" | ")
     sb.append(houseString)
     sb.append("\n")
 
     sb.append("Starthäuschen:")
     sb.append("\n")
     sb.append("\t")
-    val startHouse = Array.fill(4)("00")
-    for (piece <- gameState.currentPlayer.pieces) {
-      if (!piece.isOnField) {
-        startHouse(piece.id - 1) = s"${piece.player.id + piece.id}"
+
+    val startHouseFields = new Array[String](4)
+    for (i <- 0 until 4) {
+      val field = gameState.currentPlayer.startHouse(i)
+
+      if (field.isOccupied) {
+        startHouseFields(i) = s"${field.piece.get.player.id + field.piece.get.id}"
+      } else {
+        startHouseFields(i) = s"${field.value}"
       }
     }
 
-    sb.append(startHouse.mkString(" | "))
+    val startHouseString = startHouseFields.mkString(" | ")
+
+    sb.append(startHouseString.mkString(" | "))
 
     return sb.toString()
   }

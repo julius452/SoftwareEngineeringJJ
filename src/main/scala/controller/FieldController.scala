@@ -62,4 +62,24 @@ class FieldController {
 
     return field
   }
+
+  def initializeStartHouseField(): Field = {
+    val value = "00"
+    val position = -1
+    val isOccupied = false
+    val piece = None
+    val isStartField = false
+    val isHouseField = false
+
+    val field = Field(
+      value,
+      position,
+      isOccupied,
+      piece,
+      isStartField,
+      isHouseField
+    )
+
+    return field
+  }
 }

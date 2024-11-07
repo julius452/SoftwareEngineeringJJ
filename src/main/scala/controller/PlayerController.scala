@@ -1,10 +1,11 @@
 package controller
 
-import model.{Piece, Player}
+import model.{Field, Piece, Player}
 import controller.PieceController
 
 class PlayerController() {
   private val pieceController = new PieceController()
+  private val fieldController = new FieldController()
   private val playerId = Array("A", "B", "C", "D")
 
   def initializePlayer(id: Int, name: String): Player = {
@@ -12,12 +13,19 @@ class PlayerController() {
       id = playerId(id - 1),
       name = name,
       pieces = new Array[Piece](4),
-      house = Array.fill(4)("00"),
+      house = new Array[Field](4),
+      startHouse = new Array[Field](4),
       startPosition = (id-1) * 10
     )
 
     for (i <- 0 to 3) {
+      player.startHouse(i) = fieldController.initializeStartHouseField()
+
       player.pieces(i) = pieceController.initializePiece(player, i + 1)
+    }
+
+    for (i <- 0 to 3) {
+      player.house(i) = fieldController.initializeHomeField(i)
     }
 
     return player
