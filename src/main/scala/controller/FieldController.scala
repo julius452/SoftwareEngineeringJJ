@@ -3,9 +3,9 @@ package controller
 import model.Field
 
 class FieldController {
-  def initializeStartField(position: Int): Field = {
+  def initializeStartField(positionIndex: Int): Field = {
     val value = "ST"
-    val position = position
+    val position = positionIndex
     val isOccupied = false
     val piece = None
     val isStartField = true
@@ -23,9 +23,9 @@ class FieldController {
     return field
   }
 
-  def initializeGameField(position: Int): Field = {
+  def initializeGameField(positionIndex: Int): Field = {
     val value = "00"
-    val position = position
+    val position = positionIndex
     val isOccupied = false
     val piece = None
     val isStartField = false
@@ -43,9 +43,9 @@ class FieldController {
     return field
   }
 
-  def initializeHomeField(position: Int): Field = {
+  def initializeHomeField(positionIndex: Int): Field = {
     val value = "00"
-    val position = position
+    val position = positionIndex
     val isOccupied = false
     val piece = None
     val isStartField = false
