@@ -4,7 +4,16 @@ import model.{GameBoard, Piece, GameState}
 
 class GameBoardController {
   def initializeGameBoard(): GameBoard = {
-    return GameBoard(Array.fill(40)("00"))
+    val board = Array.fill(40)("00")
+
+    // Startfelder
+    for (i <- 0 to 3) {
+      board(i * 10) = "ST"
+      board(i * 10) = "ST"
+      board(i * 10) = "ST"
+      board(i * 10) = "ST"
+    }
+    return GameBoard(board)
   }
 
   def movePiece(gameState: GameState, piece: Piece, steps: Int): Unit = {
@@ -18,7 +27,6 @@ class GameBoardController {
       piece.position = newIndex
     }
     if (!piece.isOnField) {
-      println("Start: " + piece.player.startPosition)
       val start = piece.player.startPosition
       val fields = gameState.board.fields
       fields(start) = s"${piece.player.id + piece.id}"
