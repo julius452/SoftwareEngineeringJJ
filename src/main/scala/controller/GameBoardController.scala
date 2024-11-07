@@ -1,6 +1,6 @@
 package controller
 
-import model.{GameBoard, Piece, GameState, Field}
+import model.{Field, GameBoard, GameState, Piece, Player}
 
 class GameBoardController {
   val fieldController = new FieldController()
@@ -40,7 +40,6 @@ class GameBoardController {
 
           piece.isInHome = true
           piece.isOnField = false
-          println(s"Piece ${piece.id} für Spieler ${piece.player.id} ist im Haus angekommen an Stelle: $restSteps.")
         }
 
       } else {
@@ -72,5 +71,17 @@ class GameBoardController {
       piece.traveledFields = 0
       piece.isOnField = true
     }
+  }
+
+
+  def throwPlayerOut(throwingPlayer: Player, piece: Piece, landingField : Field, gameState: GameState): Unit = {
+    val throwingPiece = landingField.piece
+    val returnToStartField = throwingPlayer.startHouse(throwingPiece.get.id - 1)
+    returnToStartField.isOccupied = true
+    returnToStartField.piece = throwingPiece
+    throwingPiece.get.field = returnToStartField
+    throwingPiece.get.isOnField = false
+    throwingPiece.get.traveledFields = 0
+    movePiece(gameState, piece, gameState.dice.lastRoll)
   }
 }

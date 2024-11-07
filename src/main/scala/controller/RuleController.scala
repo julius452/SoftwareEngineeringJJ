@@ -1,22 +1,51 @@
 package controller
 
-import model.{GameState, Piece, Player}
+import model.{GameState, Piece, Player, Field}
 
 class RuleController(gameState: GameState) {
-  def checkCollision(piece: Piece, newPosition: Int): Boolean = {
-    //gameState.board.positions(newPosition).exists(_.player != piece.player)
-    false
+  private val gameBoardController = new GameBoardController()
+  def checkCollision(piece: Piece, landingField: Field, gameState: GameState): Boolean = {
+    if (landingField.isOccupied) {
+      val standingPlayer = landingField.piece.get.player
+      gameBoardController.throwPlayerOut(standingPlayer, piece, landingField, gameState)
+      return true
+    } else {
+      return false
+    }
   }
 
-  def isStartFieldFree(player: Player): Boolean = {
-    //gameState.board.positions(player.startPosition).isEmpty
-    false
+
+  def isStartFieldFree(player: Player, gameState: GameState): Boolean = {
+    val startField = gameState.board.fields(player.startPosition)
+    if (startField.isOccupied) {
+      return false
+    } else {
+      return true
+    }
   }
 
-  def validateMove(piece: Piece, steps: Int): Boolean = {
-    //val newPosition = (piece.position.getOrElse(0) + steps) % gameState.board.positions.size
-    //!checkCollision(piece, newPosition)
-    false
+  def validateMove(piece: Piece, gameState: GameState): Boolean = {
+    if (!piece.isOnField && gameState.dice.lastRoll == 6) {
+      if(isStartFieldFree(piece.player, gameState)){
+        return true
+      } else {
+        return false
+      }
+    }
+    // checken ob man mit der gewürfelten Zahl ins Haus kommt
+
+
+    val landingField = gameState.board.fields(piece.field.position + gameState.dice.lastRoll)
+    if (landingField.isOccupied) {
+      val standingPlayer = landingField.piece.get.player
+      if (standingPlayer.id.equals(piece.player.id)) {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      return true
+    }
   }
 
   def canEnterGoal(piece: Piece, steps: Int): Boolean = {
