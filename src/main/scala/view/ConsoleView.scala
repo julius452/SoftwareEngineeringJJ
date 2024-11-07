@@ -65,6 +65,17 @@ class ConsoleView {
 
   def displayGameBoard(gameState: GameState): String = {
     val sb = new StringBuilder()
+    sb.append(getGameBoardAsString(gameState))
+
+    sb.append(getPlayerHouseAsString(gameState))
+
+    sb.append(getPlayerStartHouseAsString(gameState))
+
+    return sb.toString()
+  }
+
+  def getGameBoardAsString(gameState: GameState): String = {
+    val sb = new StringBuilder()
     sb.append("Spielfeld:")
     sb.append("\n")
     sb.append("\t")
@@ -85,6 +96,12 @@ class ConsoleView {
     sb.append(boardString)
     sb.append("\n")
 
+    return sb.toString()
+  }
+
+  def getPlayerHouseAsString(gameState: GameState): String = {
+    val sb = new StringBuilder()
+
     sb.append("Haus:")
     sb.append("\n")
     sb.append("\t")
@@ -104,6 +121,12 @@ class ConsoleView {
     sb.append(houseString)
     sb.append("\n")
 
+    return sb.toString()
+  }
+
+  def getPlayerStartHouseAsString(gameState: GameState): String = {
+    val sb = new StringBuilder()
+
     sb.append("Starthäuschen:")
     sb.append("\n")
     sb.append("\t")
@@ -120,8 +143,7 @@ class ConsoleView {
     }
 
     val startHouseString = startHouseFields.mkString(" | ")
-
-    sb.append(startHouseString.mkString(" | "))
+    sb.append(startHouseString)
 
     return sb.toString()
   }
