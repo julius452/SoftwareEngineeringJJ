@@ -9,6 +9,7 @@ class GameController() {
   private val playerController = new PlayerController()
   private val gameStateController = new GameStateController()
   private val gameBoardController = new GameBoardController()
+  private val ruleController = new RuleController()
 
   def startNewGame(): Unit = {
     // Spieler initialisieren
@@ -122,11 +123,40 @@ class GameController() {
 
   private def executePlayerTurn(gameState: GameState): Unit = {
     println(consoleView.displayGameBoard(gameState))
-    println(consoleView.displayPlayerPossibleMoves(gameState.currentPlayer))
+
+    // for (piece <- gameState.currentPlayer.pieces) {
+    //  valdiateMove(piece, gameState)
+
+    println(consoleView.displayPlayerCanEnterPiece(gameState.currentPlayer))
+
+    for (piece <- gameState.currentPlayer.pieces) {
+      if (ruleController.validateMove(piece, gameState)) {
+        println(consoleView.displayValideMove(piece))
+      }
+    }
+
+    println(consoleView.displayWhichPieceToMove())
+    //println(consoleView.displayPlayerPossibleMoves(gameState.currentPlayer))
 
     val input = scala.io.StdIn.readInt()
-    gameBoardController.movePiece(gameState, gameState.currentPlayer.pieces(input-1), gameState.dice.lastRoll)
 
+    val pieceToRun = gameState.currentPlayer.pieces(input-1)
+
+    if (!pieceToRun.isOnField) {
+      gameBoardController.movePiece(gameState, gameState.currentPlayer.pieces(input-1), gameState.dice.lastRoll)
+      println(consoleView.displayGameBoard(gameState))
+      return
+    }
+
+    val landingField = gameState.board.fields((pieceToRun.field.position + gameState.dice.lastRoll) % gameState.board.fields.length)
+
+    if (ruleController.checkCollision(pieceToRun, landingField, gameState)) {
+      gameBoardController.throwPlayerOut(landingField.piece.get.player, pieceToRun, landingField, gameState)
+      println(consoleView.displayGameBoard(gameState))
+      return
+    }
+
+    gameBoardController.movePiece(gameState, pieceToRun, gameState.dice.lastRoll)
     println(consoleView.displayGameBoard(gameState))
 
     //TODO: Implement player turn logic

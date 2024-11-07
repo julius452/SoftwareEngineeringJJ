@@ -77,11 +77,16 @@ class GameBoardController {
   def throwPlayerOut(throwingPlayer: Player, piece: Piece, landingField : Field, gameState: GameState): Unit = {
     val throwingPiece = landingField.piece
     val returnToStartField = throwingPlayer.startHouse(throwingPiece.get.id - 1)
+
     returnToStartField.isOccupied = true
     returnToStartField.piece = throwingPiece
+
     throwingPiece.get.field = returnToStartField
     throwingPiece.get.isOnField = false
     throwingPiece.get.traveledFields = 0
+
+    landingField.isOccupied = false
+
     movePiece(gameState, piece, gameState.dice.lastRoll)
   }
 }

@@ -2,8 +2,9 @@ package controller
 
 import model.{GameState, Piece, Player, Field}
 
-class RuleController(gameState: GameState) {
+class RuleController() {
   private val gameBoardController = new GameBoardController()
+
   def checkCollision(piece: Piece, landingField: Field, gameState: GameState): Boolean = {
     if (landingField.isOccupied) {
       val standingPlayer = landingField.piece.get.player
@@ -32,20 +33,24 @@ class RuleController(gameState: GameState) {
         return false
       }
     }
+
     // checken ob man mit der gewürfelten Zahl ins Haus kommt
-
-
-    val landingField = gameState.board.fields(piece.field.position + gameState.dice.lastRoll)
-    if (landingField.isOccupied) {
-      val standingPlayer = landingField.piece.get.player
-      if (standingPlayer.id.equals(piece.player.id)) {
-        return false
+    if (piece.isOnField) {
+      val landingIndex = (piece.field.position + gameState.dice.lastRoll) % gameState.board.fields.length
+      val landingField = gameState.board.fields(landingIndex)
+      if (landingField.isOccupied) {
+        val standingPlayer = landingField.piece.get.player
+        if (standingPlayer.id.equals(piece.player.id)) {
+          return false
+        } else {
+          return true
+        }
       } else {
         return true
       }
-    } else {
-      return true
     }
+
+    return false
   }
 
   def canEnterGoal(piece: Piece, steps: Int): Boolean = {

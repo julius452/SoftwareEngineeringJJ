@@ -1,6 +1,6 @@
 package view
 
-import model.{GameBoard, GameState, Player}
+import model.{GameBoard, GameState, Piece, Player}
 
 class ConsoleView {
   def displayAskForPlayersCount(): String = {
@@ -40,27 +40,25 @@ class ConsoleView {
   }
 
   def displayPlayerCanEnterPiece(player: Player): String = {
-    return s"${player.name} kann eine Figur auf das Spielfeld setzen."
+    return s"\nMögliche Züge:."
   }
 
-  def displayPlayerPossibleMoves(player: Player): String = {
-    var sb = new StringBuilder()
-    sb.append(s"\nFolgende Figuren können bewegt werden:")
-    sb.append("\n")
-    for (piece <- player.pieces) {
-      if (piece.isOnField) {
-        sb.append("\t")
-        sb.append(s"Figur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.field.position} kann ziehen")
-        sb.append("\n")
-      } else {
-        sb.append("\t")
-        sb.append(s"Figur ${piece.player.id + piece.id} (${piece.id}) kann auf das Spielfeld gesetzt werden")
-        sb.append("\n")
-      }
-    }
-    sb.append("Welche Figur soll ziehen?:")
+  def displayWhichPieceToMove(): String = {
+    return "Welche Figur soll ziehen?:"
+  }
 
-    return sb.toString()
+  def displayValideMove(piece: Piece): String = {
+    val sb = new StringBuilder()
+
+    if (piece.isOnField) {
+      return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.field.position} kann ziehen."
+    }
+
+    if (piece.isInHome) {
+      return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) kann im Haus ziehen."
+    }
+
+    return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) kann auf das Spielfeld gesetzt werden."
   }
 
   def displayGameBoard(gameState: GameState): String = {
