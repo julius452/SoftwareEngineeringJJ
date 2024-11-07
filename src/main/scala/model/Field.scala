@@ -3,8 +3,8 @@ package model
 case class Field(
   value: String,
   position: Int,
-  isOccupied: Boolean,
-  piece: Option[Piece],
+  var isOccupied: Boolean,
+  var piece: Option[Piece],
   isStartField: Boolean,
   isHouseField: Boolean
 )

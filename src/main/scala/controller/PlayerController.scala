@@ -19,9 +19,14 @@ class PlayerController() {
     )
 
     for (i <- 0 to 3) {
+      player.pieces(i) = pieceController.initializePiece(player, i + 1)
+
       player.startHouse(i) = fieldController.initializeStartHouseField()
 
-      player.pieces(i) = pieceController.initializePiece(player, i + 1)
+      player.startHouse(i).piece = Some(player.pieces(i))
+      player.startHouse(i).isOccupied = true
+
+      player.pieces(i).field = player.startHouse(i)
     }
 
     for (i <- 0 to 3) {

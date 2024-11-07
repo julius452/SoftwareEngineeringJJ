@@ -30,8 +30,13 @@ class GameBoardController {
         val restSteps = newTraveledFields - 39
 
         if (restSteps <= piece.player.house.length) {
-          var landingField = piece.player.house(restSteps-1)
+          piece.field.isOccupied = false
+
+          val landingField = piece.player.house(restSteps-1)
           piece.field = landingField
+
+          landingField.piece = Some(piece)
+          landingField.isOccupied = true
 
           piece.isInHome = true
           piece.isOnField = false
@@ -41,17 +46,28 @@ class GameBoardController {
       } else {
         val newIndex = (piece.field.position + steps) % fields.length
         val landingField = fields(newIndex)
-        piece.field = landingField
 
+        piece.field.isOccupied = false
+        landingField.isOccupied = true
+
+        piece.field = landingField
         piece.traveledFields = newTraveledFields
+
+        landingField.piece = Some(piece)
       }
     }
-    if (!piece.isOnField) {
+    else {
       val start = piece.player.startPosition
       val fields = gameState.board.fields
 
       val landingField = fields(start)
+
+      piece.field.isOccupied = false
+
       piece.field = landingField
+
+      landingField.piece = Some(piece)
+      landingField.isOccupied = true
 
       piece.traveledFields = 0
       piece.isOnField = true
