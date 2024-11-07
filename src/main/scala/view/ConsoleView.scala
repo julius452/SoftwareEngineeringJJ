@@ -82,14 +82,14 @@ class ConsoleView {
     sb.append("Starthäuschen:")
     sb.append("\n")
     sb.append("\t")
+    val startHouse = Array.fill(4)("00")
     for (piece <- gameState.currentPlayer.pieces) {
       if (!piece.isOnField) {
-        sb.append(s"${piece.player.id + piece.id}")
-        sb.append(" | ")
-      } else {
-        sb.append("00 | ")
+        startHouse(piece.id - 1) = s"${piece.player.id + piece.id}"
       }
     }
+
+    sb.append(startHouse.mkString(" | "))
 
     return sb.toString()
   }
