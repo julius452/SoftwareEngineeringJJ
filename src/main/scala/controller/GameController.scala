@@ -14,10 +14,14 @@ class GameController() {
     // Spieler initialisieren
     val players = initializePlayers()
 
+    println(consoleView.displayDivider())
+
     val gameState = gameStateController.initializeGameState(players)
 
     // Startspieler bestimmen
     val startingPlayer = determineStartingPlayer(gameState, players)
+
+    println(consoleView.displayDivider())
 
     gameStateController.updateCurrentPlayer(gameState, startingPlayer)
 
@@ -90,7 +94,13 @@ class GameController() {
         executePlayerTurn(gameState)
       }
 
-      gameStateController.nextTurn(gameState)
+      if (gameState.dice.lastRoll != 6) {
+        gameStateController.nextTurn(gameState)
+      } else {
+        println(consoleView.displayPlayerCanRollAgain(currentPlayer))
+      }
+
+      println(consoleView.displayDivider())
     }
   }
 
