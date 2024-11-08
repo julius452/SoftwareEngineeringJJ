@@ -85,8 +85,11 @@ class GameBoardController {
     throwingPiece.get.isOnField = false
     throwingPiece.get.traveledFields = 0
 
-    landingField.isOccupied = false
+    piece.field.isOccupied = false
+    piece.field.piece = None
 
-    movePiece(gameState, piece, gameState.dice.lastRoll)
+    piece.field = landingField
+    piece.traveledFields += gameState.dice.lastRoll
+    landingField.piece = Some(piece)
   }
 }
