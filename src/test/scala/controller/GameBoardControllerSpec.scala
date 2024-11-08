@@ -34,6 +34,21 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       gameBoard.fields(5).piece shouldBe Some(piece)
     }
 
+    "move a piece correctly when traveling beyond field 39 into the player's house" in {
+      val house = Array.fill(4)(Field("00",0,isOccupied = false, piece = None, isStartField = false, isHouseField = true))
+      val player = Player("A", "Player1", Array(), house, Array(), startPosition = 0)
+      val piece = Piece(player, 1, traveledFields = 38, isInHome = false, isOnField = true, Field("00", 38, isOccupied = true, piece = None, isStartField = false, isHouseField = false))
+
+      val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
+      val gameState = GameState(List(player), player, Dice(6), gameBoard, isRunning = true)
+
+      controller.movePiece(gameState, piece, 3)
+
+      piece.isInHome shouldBe true
+      piece.isOnField shouldBe false
+      piece.field.position shouldBe 2
+    }
+
 
 
     "throw a player out correctly" in {
