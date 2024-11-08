@@ -1,0 +1,39 @@
+name: Scala CI with Coverage
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21' # or any other version your project requires
+
+    - name: Set up sbt
+      uses: coursier/setup-action@v1
+      with:
+        apps: sbt
+
+    - name: Run Tests with Coverage
+      run: |
+        sbt clean coverage test
+        sbt coverageReport
+
+    - name: Upload Coverage Report
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: target/scala-*/scoverage-report
