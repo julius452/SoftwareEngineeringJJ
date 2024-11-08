@@ -32,6 +32,8 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
     val gameState = GameState(List(player), player, Dice(6), gameBoard, isRunning = true)
 
 
+
+
     "display a prompt to ask for player count" in {
       consoleView.displayAskForPlayersCount() shouldBe "Wie viele spielen mit? (2-4):"
     }

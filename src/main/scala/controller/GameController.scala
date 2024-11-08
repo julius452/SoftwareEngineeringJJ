@@ -159,7 +159,7 @@ class GameController() {
     gameBoardController.movePiece(gameState, pieceToRun, gameState.dice.lastRoll)
     println(consoleView.displayGameBoard(gameState))
 
-    //TODO: Implement player turn logic
+
   }
 }
 
