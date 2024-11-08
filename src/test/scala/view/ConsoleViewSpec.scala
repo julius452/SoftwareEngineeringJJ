@@ -89,7 +89,30 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
       piece.isInHome = false
       piece.field = Field("00", 0, isOccupied = true, piece = Some(piece), isStartField = false, isHouseField = false)
       consoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) kann auf das Spielfeld gesetzt werden."
+    }
 
+    "display the game board" in {
+      // Test with all fields unoccupied
+      val unoccupiedBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
+      val unoccupiedHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = true))
+      val unoccupiedStartHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = true, isHouseField = false))
+      val unoccupiedPlayer = Player("A", "Player1", pieces, unoccupiedHouses, unoccupiedStartHouses, startPosition = 0)
+      val unoccupiedGameState = GameState(List(unoccupiedPlayer), unoccupiedPlayer, Dice(6), unoccupiedBoard, isRunning = true)
+      val unoccupiedBoardString = consoleView.getGameBoardAsString(unoccupiedGameState) +
+        consoleView.getPlayerHouseAsString(unoccupiedGameState) +
+        consoleView.getPlayerStartHouseAsString(unoccupiedGameState)
+      consoleView.displayGameBoard(unoccupiedGameState) shouldBe unoccupiedBoardString
+
+      // Test with some fields occupied
+      val occupiedBoard = GameBoard(Array.tabulate(40)(i => Field("00", i, isOccupied = i % 2 == 0, piece = if (i % 2 == 0) Some(piece) else None, isStartField = false, isHouseField = false)))
+      val occupiedHouses = Array.tabulate(4)(i => Field("00", i, isOccupied = i % 2 == 0, piece = if (i % 2 == 0) Some(piece) else None, isStartField = false, isHouseField = true))
+      val occupiedStartHouses = Array.tabulate(4)(i => Field("00", i, isOccupied = i % 2 == 0, piece = if (i % 2 == 0) Some(piece) else None, isStartField = true, isHouseField = false))
+      val occupiedPlayer = Player("A", "Player1", pieces, occupiedHouses, occupiedStartHouses, startPosition = 0)
+      val occupiedGameState = GameState(List(occupiedPlayer), occupiedPlayer, Dice(6), occupiedBoard, isRunning = true)
+      val occupiedBoardString = consoleView.getGameBoardAsString(occupiedGameState) +
+        consoleView.getPlayerHouseAsString(occupiedGameState) +
+        consoleView.getPlayerStartHouseAsString(occupiedGameState)
+      consoleView.displayGameBoard(occupiedGameState) shouldBe occupiedBoardString
     }
 
     "display the game board as a string" in {

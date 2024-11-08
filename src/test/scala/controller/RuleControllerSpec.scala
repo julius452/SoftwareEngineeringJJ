@@ -46,6 +46,9 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
 
       // Kollisionserkennung
       ruleController.checkCollision(piece1, landingField, gameState) shouldBe true
+
+      landingField.isOccupied = false
+      ruleController.checkCollision(piece1, landingField, gameState) shouldBe false
     }
 
     "validate a move when the piece is not on the field and dice roll is 6" in {
@@ -58,6 +61,9 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
 
       // Es wird geprüft, ob der Zug gültig ist, wenn die Spielfigur nicht auf dem Feld ist und eine 6 geworfen wird
       ruleController.validateMove(piece1, gameState) shouldBe true
+
+      startField.isOccupied = true  // Setze das Startfeld auf besetzt
+      ruleController.validateMove(piece1, gameState) shouldBe false
     }
 
     "not allow moving a piece when the piece is not on the field and dice roll is not 6" in {
