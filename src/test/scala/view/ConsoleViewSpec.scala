@@ -2,6 +2,7 @@ package view
 
 
 import model.{Dice, Field, GameBoard, GameState, Piece, Player}
+import controller.FieldController
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -9,10 +10,27 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
 
   "A ConsoleView" should {
     val consoleView = new ConsoleView()
-    val player = Player("A", "Player1", Array(), Array(), Array(), startPosition = 0)
+    val fieldController = new FieldController()
+
+    val houses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = true))
+    for (i <- houses.indices) {
+      houses(i) = fieldController.initializeHomeField(i)
+    }
+
+    val pieces = Array.ofDim[Piece](4)
+    val startHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = true, isHouseField = false))
+
+    for (i <- pieces.indices) {
+      pieces(i) = Piece(Player("A", "Player1", pieces, Array(), Array(), startPosition = 0), i + 1, traveledFields = 0, isInHome = false, isOnField = false, startHouses(i))
+      startHouses(i).piece = Some(pieces(i))
+      startHouses(i).isOccupied = true
+    }
+
+    val player = Player("A", "Player1", pieces, houses, startHouses, startPosition = 0)
     val piece = Piece(player, 1, traveledFields = 0, isInHome = false, isOnField = true, Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false))
     val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
     val gameState = GameState(List(player), player, Dice(6), gameBoard, isRunning = true)
+
 
     "display a prompt to ask for player count" in {
       consoleView.displayAskForPlayersCount() shouldBe "Wie viele spielen mit? (2-4):"
