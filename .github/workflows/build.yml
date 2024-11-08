@@ -20,6 +20,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '21' # or any other version your project requires
+        distribution: 'temurin'
 
     - name: Set up sbt
       uses: coursier/setup-action@v1
