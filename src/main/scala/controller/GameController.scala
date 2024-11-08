@@ -112,7 +112,6 @@ class GameController() {
       askToRollDice(gameState, player)
 
       if (gameState.dice.lastRoll == 6) {
-        println(consoleView.displayPlayerCanEnterPiece(player))
         executePlayerTurn(gameState)
         return
       }
@@ -127,8 +126,8 @@ class GameController() {
     // for (piece <- gameState.currentPlayer.pieces) {
     //  valdiateMove(piece, gameState)
 
-    println(consoleView.displayPlayerCanEnterPiece(gameState.currentPlayer))
 
+    println(consoleView.displayPlayerCanEnterPiece(gameState.currentPlayer))
     for (piece <- gameState.currentPlayer.pieces) {
       if (ruleController.validateMove(piece, gameState)) {
         println(consoleView.displayValideMove(piece))

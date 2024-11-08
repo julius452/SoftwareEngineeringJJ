@@ -46,7 +46,6 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       gameBoard.fields(0).piece shouldBe Some(piece)
     }
 
-
     "move a piece correctly when traveling beyond field 39 into the player's house" in {
       val house = Array.fill(4)(Field("00", 0,isOccupied = false, piece = None, isStartField = false, isHouseField = true))
 
@@ -72,37 +71,97 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       piece.field.position shouldBe 0
     }
 
-
-
     "throw a player out correctly" in {
-      val pieces = Array.ofDim[Piece](4)
       val startHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = true, isHouseField = false))
+      val pieces = Array.tabulate(4)(i => Piece(Player("A", "Player1", Array(), Array(), startHouses, startPosition = 0), i + 1, traveledFields = 0, isInHome = false, isOnField = false, startHouses(i)))
 
       for (i <- pieces.indices) {
-        pieces(i) = Piece(Player("A", "Player1", pieces, Array(), Array(), startPosition = 0), i + 1, traveledFields = 0, isInHome = false, isOnField = false, startHouses(i))
         startHouses(i).piece = Some(pieces(i))
         startHouses(i).isOccupied = true
       }
 
-      val player1 = Player("A", "Player1", Array(), Array(), Array(), startPosition = 0)
+      val player1 = Player("A", "Player1", pieces, Array(), startHouses, startPosition = 0)
       val player2 = Player("B", "Player2", Array(), Array(), startHouses, startPosition = 0)
 
-      val piece1 = Piece(player1, 1, traveledFields = 0, isInHome = false, isOnField = true, Field("00", 0, isOccupied = true, piece = None, isStartField = false, isHouseField = false))
-      piece1.field = new Field("00", 0, isOccupied = true, Some(piece1), isStartField = false, isHouseField = false)
+      val piece1Field = Field("00", 0, isOccupied = true, piece = None, isStartField = false, isHouseField = false)
+      val piece1 = Piece(player1, 1, traveledFields = 0, isInHome = false, isOnField = true, piece1Field)
+      piece1Field.piece = Some(piece1)
 
-      val piece2 = Piece(player2, 1, traveledFields = 5, isInHome = false, isOnField = true, Field("00", 5, isOccupied = true, piece = None, isStartField = false, isHouseField = false))
-      piece2.field = new Field("00", 5, isOccupied = true, Some(piece2), isStartField = false, isHouseField = false)
-      val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = true, piece = None, isStartField = false, isHouseField = false)))
-      gameBoard.fields(0) = piece1.field
-      gameBoard.fields(5) = piece2.field
+      val piece2Field = Field("00", 5, isOccupied = true, piece = None, isStartField = false, isHouseField = false)
+      val piece2 = Piece(player2, 1, traveledFields = 5, isInHome = false, isOnField = true, piece2Field)
+      piece2Field.piece = Some(piece2)
+
+      val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
+      gameBoard.fields(0) = piece1Field
+      gameBoard.fields(5) = piece2Field
 
       val gameState = GameState(List(player1, player2), player1, Dice(6), gameBoard, isRunning = true)
 
-      controller.throwPlayerOut(player2, piece1, piece2.field, gameState)
+      controller.throwPlayerOut(player2, piece1, piece2Field, gameState)
 
       piece2.isOnField shouldBe false
-      gameBoard.fields(5).piece.get.id shouldBe piece1.id
+      piece2.traveledFields shouldBe 0
+      piece2.field shouldBe startHouses(0)
+      startHouses(0).isOccupied shouldBe true
+      startHouses(0).piece shouldBe Some(piece2)
+
+      piece1.field shouldBe piece2Field
+      piece1.traveledFields shouldBe 6
+      piece2Field.piece shouldBe Some(piece1)
     }
 
+    "handle edge cases for movePiece" in {
+      val player = Player("A", "Player1", Array(), Array(), Array(), startPosition = 0)
+      val piece = Piece(player, 1, traveledFields = 0, isInHome = false, isOnField = false, Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false))
+      val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
+      val gameState = GameState(List(player), player, Dice(6), gameBoard, isRunning = true)
+
+      controller.movePiece(gameState, piece, 0)
+      piece.traveledFields shouldBe 0
+      gameBoard.fields(0).piece shouldBe Some(piece)
+
+      controller.movePiece(gameState, piece, 40)
+      piece.traveledFields shouldBe 0
+      gameBoard.fields(0).piece shouldBe Some(piece)
+    }
+
+    "handle edge cases for throwPlayerOut" in {
+      val startHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = true, isHouseField = false))
+      val pieces = Array.tabulate(4)(i => Piece(Player("A", "Player1", Array(), Array(), startHouses, startPosition = 0), i + 1, traveledFields = 0, isInHome = false, isOnField = false, startHouses(i)))
+
+      for (i <- pieces.indices) {
+        startHouses(i).piece = Some(pieces(i))
+        startHouses(i).isOccupied = true
+      }
+
+      val player1 = Player("A", "Player1", pieces, Array(), startHouses, startPosition = 0)
+      val player2 = Player("B", "Player2", Array(), Array(), startHouses, startPosition = 0)
+
+      val piece1Field = Field("00", 0, isOccupied = true, piece = None, isStartField = false, isHouseField = false)
+      val piece1 = Piece(player1, 1, traveledFields = 0, isInHome = false, isOnField = true, piece1Field)
+      piece1Field.piece = Some(piece1)
+
+      val piece2Field = Field("00", 5, isOccupied = true, piece = None, isStartField = false, isHouseField = false)
+      val piece2 = Piece(player2, 1, traveledFields = 5, isInHome = false, isOnField = true, piece2Field)
+      piece2Field.piece = Some(piece2)
+
+      val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
+      gameBoard.fields(0) = piece1Field
+      gameBoard.fields(5) = piece2Field
+
+      val gameState = GameState(List(player1, player2), player1, Dice(6), gameBoard, isRunning = true)
+
+      controller.throwPlayerOut(player2, piece1, piece2Field, gameState)
+
+      piece2.isOnField shouldBe false
+      piece2.traveledFields shouldBe 0
+      piece2.field shouldBe startHouses(0)
+      startHouses(0).isOccupied shouldBe true
+      startHouses(0).piece shouldBe Some(piece2)
+
+      piece1.field shouldBe piece2Field
+      piece1.traveledFields shouldBe 6
+      piece2Field.piece shouldBe Some(piece1)
+    }
   }
 }

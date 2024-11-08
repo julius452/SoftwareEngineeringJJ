@@ -41,7 +41,6 @@ class GameBoardController {
           piece.isInHome = true
           piece.isOnField = false
         }
-
       } else {
         val newIndex = (piece.field.position + steps) % fields.length
         val landingField = fields(newIndex)

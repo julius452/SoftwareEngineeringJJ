@@ -40,7 +40,7 @@ class ConsoleView {
   }
 
   def displayPlayerCanEnterPiece(player: Player): String = {
-    return s"\nMögliche Züge:."
+    return s"\nMögliche Züge:"
   }
 
   def displayWhichPieceToMove(): String = {
