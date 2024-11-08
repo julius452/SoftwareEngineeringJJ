@@ -8,7 +8,7 @@ class PlayboardController (model: PlayboardModel, view: PlayboardView.type) {
     // Model initialisieren
     model.initializePlayboard()
 
-    // Test Push
+    // Test
 
     // Spielfeld anzeigen
     view.printBoard(model.getPlayboard, model.getHouse1, model.getHouse2, model.getHouse3, model.getHouse4)
