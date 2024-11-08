@@ -29,7 +29,7 @@ class GameController() {
     startGame(gameState);
   }
 
-  private def initializePlayers(): List[Player] = {
+  def initializePlayers(): List[Player] = {
     println(consoleView.displayAskForPlayersCount())
 
     var inputValid = false
@@ -55,7 +55,7 @@ class GameController() {
     return players
   }
 
-  private def determineStartingPlayer(gameState: GameState, players: List[Player]): Player = {
+  def determineStartingPlayer(gameState: GameState, players: List[Player]): Player = {
     println(consoleView.displayDetermineStartingPlayer())
 
     val playersWithRolls = players.map { player =>
@@ -69,7 +69,7 @@ class GameController() {
     return startingPlayer
   }
 
-  private def askToRollDice(gameState: GameState, player: Player): Unit = {
+  def askToRollDice(gameState: GameState, player: Player): Unit = {
     print(consoleView.displayAskPlayerToRoll(player))
 
     while (scala.io.StdIn.readLine() != "w"){
@@ -82,7 +82,7 @@ class GameController() {
     println(consoleView.displayDiceRollResult(player, gameState.dice.lastRoll))
   }
 
-  private def startGame(gameState: GameState): Unit = {
+  def startGame(gameState: GameState): Unit = {
     while (gameState.isRunning) {
       val currentPlayer = gameState.currentPlayer
 
@@ -105,7 +105,7 @@ class GameController() {
     }
   }
 
-  private def gameOpening(gameState: GameState, player: Player): Unit = {
+  def gameOpening(gameState: GameState, player: Player): Unit = {
     var rollCount = 0
 
     while (rollCount < 3) {
@@ -121,7 +121,7 @@ class GameController() {
     }
   }
 
-  private def executePlayerTurn(gameState: GameState): Unit = {
+  def executePlayerTurn(gameState: GameState): Unit = {
     println(consoleView.displayGameBoard(gameState))
 
     // for (piece <- gameState.currentPlayer.pieces) {
@@ -158,8 +158,6 @@ class GameController() {
 
     gameBoardController.movePiece(gameState, pieceToRun, gameState.dice.lastRoll)
     println(consoleView.displayGameBoard(gameState))
-
-
   }
 }
 
