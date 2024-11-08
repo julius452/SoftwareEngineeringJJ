@@ -34,6 +34,8 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       gameBoard.fields(5).piece shouldBe Some(piece)
     }
 
+
+
     "throw a player out correctly" in {
       val pieces = Array.ofDim[Piece](4)
       val startHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = true, isHouseField = false))

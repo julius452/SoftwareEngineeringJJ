@@ -53,11 +53,5 @@ class RuleController() {
     return false
   }
 
-  def canEnterGoal(piece: Piece, steps: Int): Boolean = {
-    /*val goalPos = piece.player.goalPositions
-    val newPosition = piece.position.getOrElse(0) + steps
-    goalPos.contains(newPosition) && goalPos.indexOf(newPosition) == piece.player.pieces.indexOf(piece) */
-    false
-  }
 }
 
