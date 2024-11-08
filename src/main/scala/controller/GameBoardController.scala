@@ -73,7 +73,6 @@ class GameBoardController {
     }
   }
 
-
   def throwPlayerOut(throwingPlayer: Player, piece: Piece, landingField : Field, gameState: GameState): Unit = {
     val throwingPiece = landingField.piece
     val returnToStartField = throwingPlayer.startHouse(throwingPiece.get.id - 1)

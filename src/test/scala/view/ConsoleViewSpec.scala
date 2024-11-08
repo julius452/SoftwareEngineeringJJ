@@ -31,9 +31,6 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
     val gameBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
     val gameState = GameState(List(player), player, Dice(6), gameBoard, isRunning = true)
 
-
-
-
     "display a prompt to ask for player count" in {
       consoleView.displayAskForPlayersCount() shouldBe "Wie viele spielen mit? (2-4):"
     }
@@ -82,21 +79,70 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
       piece.isOnField = true
       piece.field = Field("00", 3, isOccupied = true, piece = Some(piece), isStartField = false, isHouseField = false)
       consoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) auf Feld 3 kann ziehen."
+
+      piece.isOnField = false
+      piece.isInHome = true
+      piece.field = Field("00", 0, isOccupied = true, piece = Some(piece), isStartField = false, isHouseField = true)
+      consoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) kann im Haus ziehen."
+
+      piece.isOnField = false
+      piece.isInHome = false
+      piece.field = Field("00", 0, isOccupied = true, piece = Some(piece), isStartField = false, isHouseField = false)
+      consoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) kann auf das Spielfeld gesetzt werden."
+
     }
 
     "display the game board as a string" in {
-      val boardString = consoleView.getGameBoardAsString(gameState)
-      boardString should include ("Spielfeld:")
+      // Test with all fields unoccupied
+      val unoccupiedBoard = GameBoard(Array.fill(40)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)))
+      val unoccupiedGameState = GameState(List(player), player, Dice(6), unoccupiedBoard, isRunning = true)
+      val unoccupiedBoardString = consoleView.getGameBoardAsString(unoccupiedGameState)
+      unoccupiedBoardString should include ("Spielfeld:")
+      unoccupiedBoardString should include ("00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00 | 00")
+
+      // Test with some fields occupied
+      val occupiedBoard = GameBoard(Array.tabulate(40)(i => Field("00", i, isOccupied = i % 2 == 0, piece = if (i % 2 == 0) Some(piece) else None, isStartField = false, isHouseField = false)))
+      val occupiedGameState = GameState(List(player), player, Dice(6), occupiedBoard, isRunning = true)
+      val occupiedBoardString = consoleView.getGameBoardAsString(occupiedGameState)
+      occupiedBoardString should include ("Spielfeld:")
+      occupiedBoardString should include ("A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00 | A1 | 00")
+
     }
 
     "display the player house as a string" in {
-      val houseString = consoleView.getPlayerHouseAsString(gameState)
-      houseString should include ("Haus:")
+      // Test with all house fields unoccupied
+      val unoccupiedHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = true))
+      val unoccupiedPlayer = Player("A", "Player1", pieces, unoccupiedHouses, startHouses, startPosition = 0)
+      val unoccupiedGameState = GameState(List(unoccupiedPlayer), unoccupiedPlayer, Dice(6), gameBoard, isRunning = true)
+      val unoccupiedHouseString = consoleView.getPlayerHouseAsString(unoccupiedGameState)
+      unoccupiedHouseString should include ("Haus:")
+      unoccupiedHouseString should include ("00 | 00 | 00 | 00")
+
+      // Test with some house fields occupied
+      val occupiedHouses = Array.tabulate(4)(i => Field("00", i, isOccupied = i % 2 == 0, piece = if (i % 2 == 0) Some(piece) else None, isStartField = false, isHouseField = true))
+      val occupiedPlayer = Player("A", "Player1", pieces, occupiedHouses, startHouses, startPosition = 0)
+      val occupiedGameState = GameState(List(occupiedPlayer), occupiedPlayer, Dice(6), gameBoard, isRunning = true)
+      val occupiedHouseString = consoleView.getPlayerHouseAsString(occupiedGameState)
+      occupiedHouseString should include ("Haus:")
+      occupiedHouseString should include ("A1 | 00 | A1 | 00")
     }
 
     "display the player's start house as a string" in {
-      val startHouseString = consoleView.getPlayerStartHouseAsString(gameState)
-      startHouseString should include ("Starthäuschen:")
+      // Test with all start house fields unoccupied
+      val unoccupiedStartHouses = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = true, isHouseField = false))
+      val unoccupiedPlayer = Player("A", "Player1", pieces, houses, unoccupiedStartHouses, startPosition = 0)
+      val unoccupiedGameState = GameState(List(unoccupiedPlayer), unoccupiedPlayer, Dice(6), gameBoard, isRunning = true)
+      val unoccupiedStartHouseString = consoleView.getPlayerStartHouseAsString(unoccupiedGameState)
+      unoccupiedStartHouseString should include ("Starthäuschen:")
+      unoccupiedStartHouseString should include ("00 | 00 | 00 | 00")
+
+      // Test with some start house fields occupied
+      val occupiedStartHouses = Array.tabulate(4)(i => Field("00", i, isOccupied = i % 2 == 0, piece = if (i % 2 == 0) Some(piece) else None, isStartField = true, isHouseField = false))
+      val occupiedPlayer = Player("A", "Player1", pieces, houses, occupiedStartHouses, startPosition = 0)
+      val occupiedGameState = GameState(List(occupiedPlayer), occupiedPlayer, Dice(6), gameBoard, isRunning = true)
+      val occupiedStartHouseString = consoleView.getPlayerStartHouseAsString(occupiedGameState)
+      occupiedStartHouseString should include ("Starthäuschen:")
+      occupiedStartHouseString should include ("A1 | 00 | A1 | 00")
     }
 
     "display a message if the player rolls a 6 and can roll again" in {

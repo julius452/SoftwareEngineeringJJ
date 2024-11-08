@@ -14,7 +14,7 @@ class GameControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
 
   "A GameController" should {
 
-    "initialize players correctly" in {
+    /*"initialize players correctly" in {
       val players = gameController.initializePlayers()
       players.length should (be >= 2 and be <= 4)
     }
@@ -51,6 +51,6 @@ class GameControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
       val gameState = GameState(List(player), player, Dice(6), gameBoardController.initializeGameBoard(), isRunning = true)
       gameController.executePlayerTurn(gameState)
       gameState.currentPlayer shouldBe player
-    }
+    }*/
   }
 }

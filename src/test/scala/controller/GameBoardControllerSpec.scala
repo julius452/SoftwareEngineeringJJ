@@ -35,7 +35,7 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
     }
 
     "move a piece correctly when traveling beyond field 39 into the player's house" in {
-      val house = Array.fill(4)(Field("00",0,isOccupied = false, piece = None, isStartField = false, isHouseField = true))
+      val house = Array.fill(4)(Field("00", 0,isOccupied = false, piece = None, isStartField = false, isHouseField = true))
 
       for (i<- house.indices) {
         house(i) = house(i).copy(position = i)
