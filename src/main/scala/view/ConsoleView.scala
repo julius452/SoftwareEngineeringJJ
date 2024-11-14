@@ -50,11 +50,11 @@ class ConsoleView {
   def displayValideMove(piece: Piece): String = {
     val sb = new StringBuilder()
 
-    if (piece.isOnField) {
-      return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.field.position} kann ziehen."
+    if (piece.getIsOnField()) {
+      return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.getField().getPosition()} kann ziehen."
     }
 
-    if (piece.isInHome) {
+    if (piece.getIsInHome()) {
       return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) kann im Haus ziehen."
     }
 
@@ -81,12 +81,12 @@ class ConsoleView {
     val boardFields = new Array[String](40)
 
     for (i <- 0 until 40) {
-      val field = gameState.board.fields(i)
+      val field = gameState.board.getFields()(i)
 
-      if (field.isOccupied) {
-        boardFields(i) = s"${field.piece.get.player.id + field.piece.get.id}"
+      if (field.getIsOccupied()) {
+        boardFields(i) = s"${field.getPiece().get.player.id + field.getPiece().get.id}"
       } else {
-        boardFields(i) = s"${field.value}"
+        boardFields(i) = s"${field.getValue()}"
       }
     }
 
@@ -106,12 +106,12 @@ class ConsoleView {
 
     val houseFields = new Array[String](4)
     for (i <- 0 until 4) {
-      val field = gameState.currentPlayer.house(i)
+      val field = gameState.getCurrentPlayer().getHouse()(i)
 
-      if (field.isOccupied) {
-        houseFields(i) = s"${field.piece.get.player.id + field.piece.get.id}"
+      if (field.getIsOccupied()) {
+        houseFields(i) = s"${field.getPiece().get.player.id + field.getPiece().get.id}"
       } else {
-        houseFields(i) = s"${field.value}"
+        houseFields(i) = s"${field.getValue()}"
       }
     }
 
@@ -131,12 +131,12 @@ class ConsoleView {
 
     val startHouseFields = new Array[String](4)
     for (i <- 0 until 4) {
-      val field = gameState.currentPlayer.startHouse(i)
+      val field = gameState.getCurrentPlayer().getStartHouse()(i)
 
-      if (field.isOccupied) {
-        startHouseFields(i) = s"${field.piece.get.player.id + field.piece.get.id}"
+      if (field.getIsOccupied()) {
+        startHouseFields(i) = s"${field.getPiece().get.player.id + field.getPiece().get.id}"
       } else {
-        startHouseFields(i) = s"${field.value}"
+        startHouseFields(i) = s"${field.getValue()}"
       }
     }
 

@@ -1,66 +1,44 @@
 package controller
 
-import model.{GameState, Player}
+import model.{Dice, GameBoard, GameState, Player}
 import view.ConsoleView
 
 class GameController() {
   private val consoleView = new ConsoleView()
-  private val diceController = new DiceController()
   private val playerController = new PlayerController()
-  private val gameStateController = new GameStateController()
   private val gameBoardController = new GameBoardController()
   private val ruleController = new RuleController()
 
+  private var _gameState: GameState = _ //will be initialized in startNewGame
+
   def startNewGame(): Unit = {
     // Spieler initialisieren
-    val players = initializePlayers()
+    val players = playerController.initializePlayers()
 
     println(consoleView.displayDivider())
 
-    val gameState = gameStateController.initializeGameState(players)
+    val gameDice = Dice()
+    val gameBoard = GameBoard()
+    gameBoard.initializeGameBoard()
+
+    _gameState = GameState(players, gameDice, gameBoard)
 
     // Startspieler bestimmen
-    val startingPlayer = determineStartingPlayer(gameState, players)
+    val startingPlayer = determineStartingPlayer(players)
 
     println(consoleView.displayDivider())
 
-    gameStateController.updateCurrentPlayer(gameState, startingPlayer)
+    _gameState.updateCurrentPlayer(startingPlayer)
 
-    startGame(gameState);
+    startGame();
   }
 
-  def initializePlayers(): List[Player] = {
-    println(consoleView.displayAskForPlayersCount())
-
-    var inputValid = false
-    var playersCount = 0
-    while (!inputValid) {
-      playersCount = scala.io.StdIn.readInt()
-
-      if (playersCount >= 2 && playersCount <= 4) {
-        inputValid = true
-      } else {
-        println(consoleView.displayWrongInput())
-        println(consoleView.displayAskForPlayersCount())
-      }
-    }
-
-    var players = List[Player]()
-    for (i <- 1 to playersCount) {
-      println(consoleView.displayAskForPlayerName(i))
-      val playerName = scala.io.StdIn.readLine()
-      players = players :+ playerController.initializePlayer(i, playerName)
-    }
-
-    return players
-  }
-
-  def determineStartingPlayer(gameState: GameState, players: List[Player]): Player = {
+  def determineStartingPlayer(players: List[Player]): Player = {
     println(consoleView.displayDetermineStartingPlayer())
 
     val playersWithRolls = players.map { player =>
-      askToRollDice(gameState, player)
-      (player, gameState.dice.lastRoll)
+      askToRollDice(player)
+      (player, _gameState.dice.getLastRoll())
     }
 
     val startingPlayer = playersWithRolls.maxBy(_._2)._1;
@@ -69,7 +47,7 @@ class GameController() {
     return startingPlayer
   }
 
-  def askToRollDice(gameState: GameState, player: Player): Unit = {
+  def askToRollDice(player: Player): Unit = {
     print(consoleView.displayAskPlayerToRoll(player))
 
     while (scala.io.StdIn.readLine() != "w"){
@@ -77,26 +55,26 @@ class GameController() {
       print(consoleView.displayAskPlayerToRoll(player))
     }
 
-    diceController.rollDice(gameState.dice)
+    _gameState.dice.rollDice()
 
-    println(consoleView.displayDiceRollResult(player, gameState.dice.lastRoll))
+    println(consoleView.displayDiceRollResult(player, _gameState.dice.getLastRoll()))
   }
 
-  def startGame(gameState: GameState): Unit = {
-    while (gameState.isRunning) {
-      val currentPlayer = gameState.currentPlayer
+  def startGame(): Unit = {
+    while (_gameState.getRunningState()) {
+      val currentPlayer = _gameState.getCurrentPlayer()
 
       println(consoleView.displayTurnInfo(currentPlayer))
 
-      if (playerController.checkIfAllPiecesOffField(currentPlayer)) {
-        gameOpening(gameState, currentPlayer)
+      if (currentPlayer.checkIfAllPiecesOffField()) {
+        gameOpening(currentPlayer)
       } else {
-        askToRollDice(gameState, currentPlayer)
-        executePlayerTurn(gameState)
+        askToRollDice(currentPlayer)
+        executePlayerTurn()
       }
 
-      if (gameState.dice.lastRoll != 6) {
-        gameStateController.nextTurn(gameState)
+      if (_gameState.dice.getLastRoll() != 6) {
+        _gameState.nextTurn()
       } else {
         println(consoleView.displayPlayerCanRollAgain(currentPlayer))
       }
@@ -105,14 +83,14 @@ class GameController() {
     }
   }
 
-  def gameOpening(gameState: GameState, player: Player): Unit = {
+  def gameOpening(player: Player): Unit = {
     var rollCount = 0
 
     while (rollCount < 3) {
-      askToRollDice(gameState, player)
+      askToRollDice(player)
 
-      if (gameState.dice.lastRoll == 6) {
-        executePlayerTurn(gameState)
+      if (_gameState.dice.getLastRoll() == 6) {
+        executePlayerTurn()
         return
       }
 
@@ -120,16 +98,16 @@ class GameController() {
     }
   }
 
-  def executePlayerTurn(gameState: GameState): Unit = {
-    println(consoleView.displayGameBoard(gameState))
+  def executePlayerTurn(): Unit = {
+    println(consoleView.displayGameBoard(_gameState))
 
     // for (piece <- gameState.currentPlayer.pieces) {
     //  valdiateMove(piece, gameState)
 
 
-    println(consoleView.displayPlayerCanEnterPiece(gameState.currentPlayer))
-    for (piece <- gameState.currentPlayer.pieces) {
-      if (ruleController.validateMove(piece, gameState)) {
+    println(consoleView.displayPlayerCanEnterPiece(_gameState.getCurrentPlayer()))
+    for (piece <- _gameState.getCurrentPlayer().getPieces()) {
+      if (ruleController.validateMove(piece, _gameState)) {
         println(consoleView.displayValideMove(piece))
       }
     }
@@ -139,24 +117,24 @@ class GameController() {
 
     val input = scala.io.StdIn.readInt()
 
-    val pieceToRun = gameState.currentPlayer.pieces(input-1)
+    val pieceToRun = _gameState.getCurrentPlayer().getPieces()(input-1)
 
-    if (!pieceToRun.isOnField) {
-      gameBoardController.movePiece(gameState, gameState.currentPlayer.pieces(input-1), gameState.dice.lastRoll)
-      println(consoleView.displayGameBoard(gameState))
+    if (!pieceToRun.getIsOnField()) {
+      gameBoardController.movePiece(_gameState, _gameState.getCurrentPlayer().getPieces()(input-1), _gameState.dice.getLastRoll())
+      println(consoleView.displayGameBoard(_gameState))
       return
     }
 
-    val landingField = gameState.board.fields((pieceToRun.field.position + gameState.dice.lastRoll) % gameState.board.fields.length)
+    val landingField = _gameState.board.getFields()((pieceToRun.getField().getPosition() + _gameState.dice.getLastRoll()) % _gameState.board.getFields().length)
 
-    if (ruleController.checkCollision(pieceToRun, landingField, gameState)) {
-      gameBoardController.throwPlayerOut(landingField.piece.get.player, pieceToRun, landingField, gameState)
-      println(consoleView.displayGameBoard(gameState))
+    if (ruleController.checkCollision(pieceToRun, landingField, _gameState)) {
+      gameBoardController.throwPlayerOut(landingField.getPiece().get.player, pieceToRun, landingField, _gameState)
+      println(consoleView.displayGameBoard(_gameState))
       return
     }
 
-    gameBoardController.movePiece(gameState, pieceToRun, gameState.dice.lastRoll)
-    println(consoleView.displayGameBoard(gameState))
+    gameBoardController.movePiece(_gameState, pieceToRun, _gameState.dice.getLastRoll())
+    println(consoleView.displayGameBoard(_gameState))
   }
 }
 

@@ -6,8 +6,8 @@ class RuleController() {
   private val gameBoardController = new GameBoardController()
 
   def checkCollision(piece: Piece, landingField: Field, gameState: GameState): Boolean = {
-    if (landingField.isOccupied) {
-      val standingPlayer = landingField.piece.get.player
+    if (landingField.getIsOccupied()) {
+      val standingPlayer = landingField.getPiece().get.player
       gameBoardController.throwPlayerOut(standingPlayer, piece, landingField, gameState)
       return true
     } else {
@@ -17,8 +17,8 @@ class RuleController() {
 
 
   def isStartFieldFree(player: Player, gameState: GameState): Boolean = {
-    val startField = gameState.board.fields(player.startPosition)
-    if (startField.isOccupied) { //startField.piece.get.player.id.equals(player.id)
+    val startField = gameState.board.getFields()(player.startPosition)
+    if (startField.getIsOccupied()) { //startField.piece.get.player.id.equals(player.id)
       return false
     } else {
       return true
@@ -26,7 +26,7 @@ class RuleController() {
   }
 
   def validateMove(piece: Piece, gameState: GameState): Boolean = {
-    if (!piece.isOnField && gameState.dice.lastRoll == 6) {
+    if (!piece.getIsOnField() && gameState.dice.getLastRoll() == 6) {
       if(isStartFieldFree(piece.player, gameState)){
         return true
       } else {
@@ -35,11 +35,11 @@ class RuleController() {
     }
 
     // checken ob man mit der gewürfelten Zahl ins Haus kommt
-    if (piece.isOnField) {
-      val landingIndex = (piece.field.position + gameState.dice.lastRoll) % gameState.board.fields.length
-      val landingField = gameState.board.fields(landingIndex)
-      if (landingField.isOccupied) {
-        val standingPlayer = landingField.piece.get.player
+    if (piece.getIsOnField()) {
+      val landingIndex = (piece.getField().getPosition() + gameState.dice.getLastRoll()) % gameState.board.getFields().length
+      val landingField = gameState.board.getFields()(landingIndex)
+      if (landingField.getIsOccupied()) {
+        val standingPlayer = landingField.getPiece().get.player
         if (standingPlayer.id.equals(piece.player.id)) {
           return false
         } else {

@@ -1,75 +1,36 @@
 package controller
 
-import model.{Field, Piece, Player}
-import controller.PieceController
+import model.Player
+import view.ConsoleView
 
 class PlayerController() {
-  private val pieceController = new PieceController()
-  private val fieldController = new FieldController()
-  private val playerId = Array("A", "B", "C", "D")
+  private val consoleView = new ConsoleView()
+  def initializePlayers(): List[Player] = {
+    println(consoleView.displayAskForPlayersCount())
 
-  def initializePlayer(id: Int, name: String): Player = {
-    val player = Player(
-      id = playerId(id - 1),
-      name = name,
-      pieces = new Array[Piece](4),
-      house = new Array[Field](4),
-      startHouse = new Array[Field](4),
-      startPosition = (id-1) * 10
-    )
+    var inputValid = false
+    var playersCount = 0
+    while (!inputValid) {
+      playersCount = scala.io.StdIn.readInt()
 
-    for (i <- 0 to 3) {
-      player.pieces(i) = pieceController.initializePiece(player, i + 1)
-
-      player.startHouse(i) = fieldController.initializeStartHouseField()
-
-      player.startHouse(i).piece = Some(player.pieces(i))
-      player.startHouse(i).isOccupied = true
-
-      player.pieces(i).field = player.startHouse(i)
-    }
-
-    for (i <- 0 to 3) {
-      player.house(i) = fieldController.initializeHomeField(i)
-    }
-
-    return player
-  }
-
-  def checkIfAllPiecesOffField(player: Player): Boolean = {
-    var allPiecesOffField = true
-
-    for (piece <- player.pieces) {
-      if (piece.isOnField) {
-        return false
+      if (playersCount >= 2 && playersCount <= 4) {
+        inputValid = true
+      } else {
+        println(consoleView.displayWrongInput())
+        println(consoleView.displayAskForPlayersCount())
       }
     }
 
-    return allPiecesOffField
-  }
-
-  /*def enterPiece(player: Player): Unit = {
-    if (canEnterPiece(player)) {
-      val piece = player.pieces.find(_.position.isEmpty)
-      piece.foreach { p =>
-        val startPos = player.startPosition
-        updatePiecePosition(p, startPos)
-      }
+    var players = List[Player]()
+    for (i <- 1 to playersCount) {
+      println(consoleView.displayAskForPlayerName(i))
+      val playerName = scala.io.StdIn.readLine()
+      val newPlayer = Player(i, playerName)
+      newPlayer.initializeHousesAndPieces()
+      players = players :+ newPlayer
     }
-  }
 
-  def canEnterPiece(player: Player): Boolean = {
-    // gameState.get.board.positions(player.startPosition).isEmpty
-    false
+    return players
   }
-
-  def choosePieceToMove(player: Player): Option[Piece] = {
-    player.pieces.find(p => p.position.isDefined && !p.isAtHome)
-  }
-
-  private def updatePiecePosition(piece: Piece, position: Int): Unit = {
-    // val updatedBoard = gameState.board.positions.updated(position, Some(piece))
-    // gameState.board.copy(positions = updatedBoard)
-  }*/
 }
 

@@ -3,91 +3,78 @@ package controller
 import model.{Field, GameBoard, GameState, Piece, Player}
 
 class GameBoardController {
-  val fieldController = new FieldController()
-
-  def initializeGameBoard(): GameBoard = {
-    val board = new Array[Field](40)
-
-    for (i <- 0 until 40) {
-      if (i % 10 == 0) {
-        board(i) = fieldController.initializeStartField(i)
-      } else {
-        board(i) = fieldController.initializeGameField(i)
-      }
-    }
-
-    return GameBoard(board)
-  }
-
   def movePiece(gameState: GameState, piece: Piece, steps: Int): Unit = {
-    if (piece.isOnField) {
-      val fields = gameState.board.fields
+    if (piece.getIsOnField()) {
+      val fields = gameState.board.getFields()
 
-      val newTraveledFields = piece.traveledFields + steps
+      val newTraveledFields = piece.getTraveledFields() + steps
 
       if (newTraveledFields > 39) {
 
         val restSteps = newTraveledFields - 39
 
-        if (restSteps <= piece.player.house.length) {
-          piece.field.isOccupied = false
+        if (restSteps <= piece.player.getHouse().length) {
+          piece.getField().setIsOccupied(false)
 
-          val landingField = piece.player.house(restSteps-1)
-          piece.field = landingField
+          val landingField = piece.player.getHouse()(restSteps-1)
+          piece.setField(landingField)
 
-          landingField.piece = Some(piece)
-          landingField.isOccupied = true
+          landingField.setPiece(Some(piece))
+          landingField.setIsOccupied(true)
 
-          piece.isInHome = true
-          piece.isOnField = false
+          piece.setIsInHome(true)
+          piece.setIsOnField(false)
         }
       } else {
-        val newIndex = (piece.field.position + steps) % fields.length
+        val newIndex = (piece.getField().getPosition() + steps) % fields.length
         val landingField = fields(newIndex)
 
-        piece.field.isOccupied = false
-        landingField.isOccupied = true
+        piece.getField().setIsOccupied(false)
+        landingField.setIsOccupied(true)
 
-        piece.field = landingField
-        piece.traveledFields = newTraveledFields
+        piece.setField(landingField)
+        piece.setTravelFields(newTraveledFields)
 
-        landingField.piece = Some(piece)
+        landingField.setPiece(Some(piece))
       }
     }
     else {
       val start = piece.player.startPosition
-      val fields = gameState.board.fields
+      val fields = gameState.board.getFields()
 
-      val landingField = fields(start)
+      val startField = fields(start)
 
-      piece.field.isOccupied = false
+      piece.getField().setIsOccupied(false)
 
-      piece.field = landingField
+      piece.setField(startField)
 
-      landingField.piece = Some(piece)
-      landingField.isOccupied = true
+      startField.setPiece(Some(piece))
+      startField.setIsOccupied(true)
 
-      piece.traveledFields = 0
-      piece.isOnField = true
+      piece.setIsOnField(true)
+      piece.setTravelFields(0)
     }
   }
 
   def throwPlayerOut(throwingPlayer: Player, piece: Piece, landingField : Field, gameState: GameState): Unit = {
-    val throwingPiece = landingField.piece
-    val returnToStartField = throwingPlayer.startHouse(throwingPiece.get.id - 1)
+    val throwingPiece = landingField.getPiece()
+    val returnToStartField = throwingPlayer.getStartHouse()(throwingPiece.get.id - 1)
 
-    returnToStartField.isOccupied = true
-    returnToStartField.piece = throwingPiece
+    returnToStartField.setIsOccupied(true)
+    returnToStartField.setPiece(throwingPiece)
 
-    throwingPiece.get.field = returnToStartField
-    throwingPiece.get.isOnField = false
-    throwingPiece.get.traveledFields = 0
+    throwingPiece.get.setField(returnToStartField)
+    throwingPiece.get.setIsOnField(false)
+    throwingPiece.get.setTravelFields(0)
 
-    piece.field.isOccupied = false
-    piece.field.piece = None
+    piece.getField().setIsOccupied(false)
+    piece.getField().setPiece(None)
 
-    piece.field = landingField
-    piece.traveledFields += gameState.dice.lastRoll
-    landingField.piece = Some(piece)
+    piece.setField(landingField)
+
+    val traveledFields = piece.getTraveledFields()
+
+    piece.setTravelFields(traveledFields + gameState.dice.getLastRoll())
+    landingField.setPiece(Some(piece))
   }
 }

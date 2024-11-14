@@ -1,10 +1,31 @@
 package model
 
-case class GameState(
-  players: List[Player],       // Liste aller Spieler
-  var currentPlayer: Player,        // Der aktuell am Zug befindliche Spieler
-  dice: Dice,                   // Der Würfel
-  board: GameBoard,              // Das Spielfeld
-  var isRunning: Boolean     // Gibt an, ob das Spiel noch läuft
-)
+case class GameState(var playersList: List[Player], gameDice: Dice, gameBoard: GameBoard) {
+  def players: List[Player] = playersList
+
+  private var currentPlayer: Player = players.head
+  def dice: Dice = gameDice
+  def board: GameBoard = gameBoard
+
+  private var isRunning: Boolean = true
+
+  def updateCurrentPlayer(player: Player): Unit = {
+    currentPlayer = player
+  }
+
+  def getCurrentPlayer(): Player = currentPlayer
+
+  def updateRunningState(isRunning: Boolean): Unit = {
+    this.isRunning = isRunning
+  }
+
+  def getRunningState(): Boolean = isRunning
+
+  def nextTurn(): Unit = {
+    val currentIndex = players.indexOf(currentPlayer)
+    val nextPlayer = players((currentIndex + 1) % players.size)
+
+    updateCurrentPlayer(nextPlayer)
+  }
+}
 
