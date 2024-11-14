@@ -10,5 +10,9 @@ case class Dice() {
   def getLastRoll(): Int = {
     lastRoll
   }
+
+  def setLastRoll(roll: Int): Unit = {
+    lastRoll = roll
+  }
 }
 

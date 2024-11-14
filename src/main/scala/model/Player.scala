@@ -15,6 +15,7 @@ case class Player(playerId: Int, nameString: String) {
 
   def getStartHouse(): Array[Field] = startHouse
   def getHouse(): Array[Field] = house
+  def setHouse(house: Array[Field]): Unit = this.house = house
   def getPieces(): Array[Piece] = pieces
 
   def initializeHousesAndPieces(): Unit = {

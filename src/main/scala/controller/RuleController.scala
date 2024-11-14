@@ -52,6 +52,4 @@ class RuleController() {
 
     return false
   }
-
 }
-

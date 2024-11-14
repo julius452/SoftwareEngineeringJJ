@@ -1,36 +1,69 @@
-package model
-
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import model.{Player, Field, Piece, FieldType}
 
 class PlayerSpec extends AnyWordSpec with Matchers {
 
   "A Player" should {
-    val fields = Array.fill(4)(Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false))
-    val pieces = Array.fill(4)(Piece(null, 0, 0, isInHome = false, isOnField = false, fields(0)))
 
-    "initialize with correct attributes" in {
-      val player = Player("A", "Player1", pieces, fields, fields, startPosition = 0)
-
+    "initialize with the correct player ID and name" in {
+      val player = Player(1, "Player1")
       player.id shouldBe "A"
       player.name shouldBe "Player1"
-      player.pieces.length shouldBe 4
-      player.house.length shouldBe 4
-      player.startHouse.length shouldBe 4
+    }
+
+    "initialize houses and pieces correctly" in {
+      val player = Player(1, "Player1")
+      player.initializeHousesAndPieces()
+
+      // Check startHouse initialization
+      player.getStartHouse().length shouldBe 4
+      player.getStartHouse()(0).getPosition() shouldBe -1
+      player.getStartHouse()(0).getIsOccupied() shouldBe true
+      player.getStartHouse()(0).getPiece().isDefined shouldBe true
+
+      // Check house initialization
+      player.getHouse().length shouldBe 4
+      player.getHouse()(0).getPosition() shouldBe 0
+      player.getHouse()(0).getIsStartField() shouldBe false
+      player.getHouse()(0).getIsHouseField() shouldBe true
+
+      // Check pieces initialization
+      player.getPieces().length shouldBe 4
+      player.getPieces()(0).getField().getPosition() shouldBe -1
+      player.getPieces()(0).getIsOnField() shouldBe false
+    }
+
+    "return the correct start position" in {
+      val player = Player(1, "Player1")
       player.startPosition shouldBe 0
     }
 
-    "allow updating piece positions in the house and startHouse" in {
-      val player = Player("A", "Player1", pieces, fields, fields, startPosition = 0)
+    "check if all pieces are off the field correctly" in {
+      val player = Player(1, "Player1")
+      player.initializeHousesAndPieces()
 
-      // Setting one piece in the start house and marking it as occupied
-      val piece = Piece(player, 1, traveledFields = 0, isInHome = false, isOnField = true, fields(0))
-      player.startHouse(0) = fields(0)
-      player.startHouse(0).piece = Some(piece)
-      player.startHouse(0).isOccupied = true
+      // Initially, all pieces should not be on the field
+      player.checkIfAllPiecesOffField() shouldBe true
 
-      player.startHouse(0).piece shouldBe Some(piece)
-      player.startHouse(0).isOccupied shouldBe true
+      // Simulate moving a piece onto the field
+      player.getPieces()(0).setIsOnField(true)
+      player.checkIfAllPiecesOffField() shouldBe false
+
+      // Set all pieces off the field again
+      player.getPieces()(0).setIsOnField(false)
+      player.getPieces()(1).setIsOnField(false)
+      player.getPieces()(2).setIsOnField(false)
+      player.getPieces()(3).setIsOnField(false)
+      player.checkIfAllPiecesOffField() shouldBe true
+    }
+
+    "set and get house correctly" in {
+      val player = Player(1, "Player1")
+      val newHouse = Array.fill(4)(Field())
+      player.setHouse(newHouse)
+
+      player.getHouse() shouldBe newHouse
     }
   }
 }

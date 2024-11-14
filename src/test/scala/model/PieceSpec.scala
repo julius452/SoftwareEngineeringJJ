@@ -1,35 +1,61 @@
-package model
-
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import model.{Piece, Player, Field}
 
 class PieceSpec extends AnyWordSpec with Matchers {
 
   "A Piece" should {
-    val player = Player("A", "Player1", Array(), Array(), Array(), startPosition = 0)
-    val field = Field("00", 0, isOccupied = false, piece = None, isStartField = false, isHouseField = false)
 
-    "initialize with correct attributes" in {
-      val piece = Piece(player, 1, traveledFields = 0, isInHome = false, isOnField = true, field)
-      piece.player shouldBe player
-      piece.id shouldBe 1
-      piece.traveledFields shouldBe 0
-      piece.isInHome shouldBe false
-      piece.isOnField shouldBe true
-      piece.field shouldBe field
+    "initialize with correct default values" in {
+      val player = Player(1, "Player1")
+      val piece = Piece(player, 1)
+
+      piece.getTraveledFields() shouldBe 0
+      piece.getIsInHome() shouldBe false
+      piece.getIsOnField() shouldBe false
+      piece.getField().getPosition() shouldBe 0 // The field should be the default Field with position 0
     }
 
-    "update traveled fields, home status, and on-field status" in {
-      val piece = Piece(player, 1, traveledFields = 0, isInHome = false, isOnField = true, field)
+    "set and get traveled fields correctly" in {
+      val player = Player(1, "Player1")
+      val piece = Piece(player, 1)
 
-      piece.traveledFields = 5
-      piece.traveledFields shouldBe 5
+      piece.setTravelFields(10)
+      piece.getTraveledFields() shouldBe 10
 
-      piece.isInHome = true
-      piece.isInHome shouldBe true
+      piece.setTravelFields(20)
+      piece.getTraveledFields() shouldBe 20
+    }
 
-      piece.isOnField = false
-      piece.isOnField shouldBe false
+    "set and get isInHome state correctly" in {
+      val player = Player(1, "Player1")
+      val piece = Piece(player, 1)
+
+      piece.setIsInHome(true)
+      piece.getIsInHome() shouldBe true
+
+      piece.setIsInHome(false)
+      piece.getIsInHome() shouldBe false
+    }
+
+    "set and get isOnField state correctly" in {
+      val player = Player(1, "Player1")
+      val piece = Piece(player, 1)
+
+      piece.setIsOnField(true)
+      piece.getIsOnField() shouldBe true
+
+      piece.setIsOnField(false)
+      piece.getIsOnField() shouldBe false
+    }
+
+    "set and get the field correctly" in {
+      val player = Player(1, "Player1")
+      val piece = Piece(player, 1)
+      val field = Field()
+
+      piece.setField(field)
+      piece.getField() shouldBe field
     }
   }
 }

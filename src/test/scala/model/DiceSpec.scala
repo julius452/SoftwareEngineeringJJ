@@ -5,14 +5,25 @@ import org.scalatest.matchers.should.Matchers
 
 class DiceSpec extends AnyWordSpec with Matchers {
 
-  "A Dice" should {
-    "store the last roll" in {
-      val dice = Dice(5)
-      dice.lastRoll shouldBe 5
+  private val dice = Dice()
 
-      // Update last roll
-      dice.lastRoll = 3
-      dice.lastRoll shouldBe 3
+  "A Dice" should {
+    "roll Dice" in {
+      dice.rollDice()
+
+      dice.getLastRoll() should (be >= 1 and be <= 6)
+    }
+
+    "get last roll" in {
+      dice.setLastRoll(6)
+
+      dice.getLastRoll() shouldBe 6
+    }
+
+    "set last roll" in {
+      dice.setLastRoll(5)
+
+      dice.getLastRoll() shouldBe 5
     }
   }
 }
