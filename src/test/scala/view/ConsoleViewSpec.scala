@@ -134,7 +134,7 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
 
     "display a divider" in {
       val view = new ConsoleView()
-      view.displayDivider() shouldBe "\n----------------------------------------------------------------------\n"
+      view.displayDivider() shouldBe "\n" + ("-" * 70) + "\n"
     }
   }
 }
