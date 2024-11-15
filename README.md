@@ -1,3 +1,5 @@
+[![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
+
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
 ## Beschreibung
