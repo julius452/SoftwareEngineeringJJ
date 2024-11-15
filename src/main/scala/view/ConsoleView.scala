@@ -1,8 +1,13 @@
 package view
 
 import model.{GameBoard, GameState, Piece, Player}
+import util.Observer
 
-class ConsoleView {
+class ConsoleView extends Observer{
+
+  def update(gameState: GameState): Unit = {
+    println(displayGameBoard(gameState)) // Zeigt das aktuelle Spielfeld an
+  }
   def displayAskForPlayersCount(): String = {
     return "Wie viele spielen mit? (2-4):"
   }
@@ -24,7 +29,7 @@ class ConsoleView {
   }
 
   def displayStartPlayer(player: Player): String = {
-    return s"${player.name} beginnt!"
+    return s"${player.name} beginnt!\n"
   }
 
   def displayTurnInfo(player: Player): String = {
@@ -40,7 +45,7 @@ class ConsoleView {
   }
 
   def displayPlayerCanEnterPiece(player: Player): String = {
-    return s"\nMögliche Züge:"
+    return s"Mögliche Züge:"
   }
 
   def displayWhichPieceToMove(): String = {
@@ -69,6 +74,7 @@ class ConsoleView {
 
     sb.append(getPlayerStartHouseAsString(gameState))
 
+    sb.append('\n')
     return sb.toString()
   }
 
@@ -147,12 +153,11 @@ class ConsoleView {
   }
 
   def displayPlayerCanRollAgain(player: Player): String = {
-    return s"\n${player.name} hat eine 6 gewürfelt und darf nochmal würfeln."
+    return s"${player.name} hat eine 6 gewürfelt und darf nochmal würfeln.\n"
   }
 
   def displayDivider(): String = {
     val sb = new StringBuilder()
-    sb.append("\n")
     sb.append("-"*70)
     sb.append("\n")
     return sb.toString()

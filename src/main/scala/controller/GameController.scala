@@ -23,6 +23,9 @@ class GameController() {
 
     _gameState = GameState(players, gameDice, gameBoard)
 
+    // Observer hinzufügen
+    _gameState.addObserver(consoleView)
+
     // Startspieler bestimmen
     val startingPlayer = determineStartingPlayer(players)
 
@@ -134,7 +137,7 @@ class GameController() {
     }
 
     gameBoardController.movePiece(_gameState, pieceToRun, _gameState.dice.getLastRoll())
-    println(consoleView.displayGameBoard(_gameState))
+    //println(consoleView.displayGameBoard(_gameState))
   }
 }
 
