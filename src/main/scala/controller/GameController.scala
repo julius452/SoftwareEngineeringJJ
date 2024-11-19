@@ -11,55 +11,6 @@ class GameController() {
 
   private var _gameState: GameState = _ //will be initialized in startNewGame
 
-  def startNewGame(): Unit = {
-    // Spieler initialisieren
-    val players = playerController.initializePlayers()
-
-    println(consoleView.displayDivider())
-
-    val gameDice = Dice()
-    val gameBoard = GameBoard()
-    gameBoard.initializeGameBoard()
-
-    _gameState = GameState(players, gameDice, gameBoard)
-
-    // Startspieler bestimmen
-    val startingPlayer = determineStartingPlayer(players)
-
-    println(consoleView.displayDivider())
-
-    _gameState.updateCurrentPlayer(startingPlayer)
-
-    startGame();
-  }
-
-  def determineStartingPlayer(players: List[Player]): Player = {
-    println(consoleView.displayDetermineStartingPlayer())
-
-    val playersWithRolls = players.map { player =>
-      askToRollDice(player)
-      (player, _gameState.dice.getLastRoll())
-    }
-
-    val startingPlayer = playersWithRolls.maxBy(_._2)._1;
-    println(consoleView.displayStartPlayer(startingPlayer))
-
-    return startingPlayer
-  }
-
-  def askToRollDice(player: Player): Unit = {
-    print(consoleView.displayAskPlayerToRoll(player))
-
-    while (scala.io.StdIn.readLine() != "w"){
-      print(consoleView.displayWrongInput())
-      print(consoleView.displayAskPlayerToRoll(player))
-    }
-
-    _gameState.dice.rollDice()
-
-    println(consoleView.displayDiceRollResult(player, _gameState.dice.getLastRoll()))
-  }
-
   def startGame(): Unit = {
     while (_gameState.getRunningState()) {
       val currentPlayer = _gameState.getCurrentPlayer()
@@ -69,7 +20,7 @@ class GameController() {
       if (currentPlayer.checkIfAllPiecesOffField()) {
         gameOpening(currentPlayer)
       } else {
-        askToRollDice(currentPlayer)
+        //askToRollDice(currentPlayer)
         executePlayerTurn()
       }
 
@@ -87,7 +38,7 @@ class GameController() {
     var rollCount = 0
 
     while (rollCount < 3) {
-      askToRollDice(player)
+      //askToRollDice(player)
 
       if (_gameState.dice.getLastRoll() == 6) {
         executePlayerTurn()
