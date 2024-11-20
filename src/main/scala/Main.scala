@@ -75,4 +75,34 @@ object Main extends App {
   println(consoleView.displayDivider())
 
   //startGame();
+  // run game
+  while (gameState.getRunningState()) {
+    val player = gameState.getCurrentPlayer()
+    println(consoleView.displayTurnInfo(player))
+
+    if (player.checkIfAllPiecesOffField()) {
+      var rollCount = 0
+
+      while (rollCount < 3) {
+        print(consoleView.displayAskPlayerToRoll(player))
+
+        while (!gameInputHandler.checkDiceRollInput(scala.io.StdIn.readLine())) {
+          println(consoleView.displayWrongInput())
+          print(consoleView.displayAskPlayerToRoll(player))
+        }
+
+        gameState.dice.rollDice()
+        println(consoleView.displayDiceRollResult(player, gameState.dice.getLastRoll()))
+
+        if (gameState.dice.getLastRoll() == 6) {
+          // executePlayerTurn()
+          gameController.executePlayerTurn()
+        }
+
+        rollCount += 1
+      }
+    } else {
+      gameController.executePlayerTurn()
+    }
+  }
 }
