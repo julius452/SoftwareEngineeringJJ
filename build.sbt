@@ -6,8 +6,13 @@ lazy val root = (project in file("."))
   .settings(
     name := "SoftwareEngineeringJJ",
 
-    // Get the version from the Git tag
-    version := sys.process.Process("git describe --tags --abbrev=0").!!.stripLineEnd,
+    version := {
+      try {
+          sys.process.Process("git describe --tags --abbrev=0").!!.stripLineEnd
+      } catch {
+          case _: Throwable => "0.0.0" // Default version if no tags are found
+      }
+    },
 
     // Define the artifact name dynamically based on the version
     artifactName in (Compile, packageBin) := { (scalaVersion, module, artifactName) =>
