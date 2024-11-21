@@ -32,6 +32,7 @@ jobs:
       run: |
         sbt clean coverage test
         sbt coverageReport
+        sbt coverageAggregate
 
     - name: Upload Coverage Report
       if: success()
