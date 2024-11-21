@@ -45,7 +45,7 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         path-to-lcov: target/scala-*/scoverage-report/scoverage.xml
-        github-token: ${{ sCtouAUAfJwBgaWC5mlBzPgntY9jfDQXj }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
