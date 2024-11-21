@@ -42,10 +42,12 @@ jobs:
         path: target/scala-*/scoverage-report
 
     - name: Upload Coverage Report to Coveralls
-      uses: coverallsapp/github-action@v3
+      uses: coverallsapp/github-action@v2
       with:
-        files: target/scala-*/scoverage-report/scoverage.xml
-        token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        path-to-lcov: target/scala-*/scoverage-report/scoverage.xml
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        coveralls-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        fail-on-error: true
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
