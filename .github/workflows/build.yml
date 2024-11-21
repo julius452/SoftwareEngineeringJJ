@@ -46,6 +46,7 @@ jobs:
       with:
         path-to-lcov: target/scala-*/scoverage-report/scoverage.xml
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        fail_ci_if_error: true 
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
