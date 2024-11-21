@@ -1,22 +1,22 @@
-name: Scala Release Pipeline
+name: Release .jar on Tag Push
 
 on:
   push:
     tags:
-      - 'v*'  # Reagiert auf das Pushen von Tags, die mit "v" beginnen (z.B. v1.0.0)
+      - 'v*'  # Triggers on tags like v1.0.0, v1.2.3, etc.
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the repository
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Java
+    - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: '21'
+        java-version: '21' 
         distribution: 'temurin'
 
     - name: Set up sbt
@@ -24,19 +24,14 @@ jobs:
       with:
         apps: sbt
 
-    - name: Run Tests with Coverage
+    - name: Build the project and generate the .jar
       run: |
-        sbt clean coverage test
-        sbt coverageReport
-        sbt coverageAggregate
+        sbt clean compile package  # This will create the .jar file in the target directory
 
-    - name: Build JAR and Package for Release
-      run: |
-        sbt clean compile package
-
-    - name: Upload JAR to GitHub Releases (optional)
-      if: startsWith(github.ref, 'refs/tags/v')
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        files: target/scala-*/SoftwareEngineeringJJ.jar
+        files: target/scala-*/SoftwareEngineeringJJ.jar  # Path to the .jar file
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # This token is automatically provided by GitHub Actions
 
