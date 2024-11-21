@@ -28,6 +28,9 @@ jobs:
       with:
         apps: sbt
 
+    - name: Set up GitHub CLI
+      run: sudo apt-get install -y gh
+
     - name: Run Tests with Coverage
       run: |
         sbt clean coverage test
@@ -52,3 +55,7 @@ jobs:
         files: target/scala-*/scoverage-report/scoverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true 
+
+    - name: Append Dynamic Release Notes
+      run: |
+        gh release view ${{ github.ref_name }} --json body -q .body >> release_template.md || echo "No previous release notes found."
