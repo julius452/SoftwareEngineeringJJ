@@ -1,6 +1,6 @@
 [![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
 
-[Latest Workflow Run](https://github.com/julius452/SoftwareEngineeringJJ/actions)
+[Sunburst]([https://github.com/julius452/SoftwareEngineeringJJ/actions](https://codecov.io/gh/juliba1/WorkLogger/graphs/sunburst.svg?token=JJ1RSA3SIB))
 
 [![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
 
