@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - master
-      - develop
 
 jobs:
   build:
@@ -21,7 +20,7 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v3
       with:
-        java-version: '21' # or any other version your project requires
+        java-version: '21' 
         distribution: 'temurin'
 
     - name: Set up sbt
@@ -33,6 +32,7 @@ jobs:
       run: |
         sbt clean coverage test
         sbt coverageReport
+        sbt coverageAggregate
 
     - name: Upload Coverage Report
       if: success()
@@ -40,3 +40,10 @@ jobs:
       with:
         name: coverage-report
         path: target/scala-*/scoverage-report
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: target/scala-*/scoverage-report/scoverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true 
