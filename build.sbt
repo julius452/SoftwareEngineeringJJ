@@ -1,3 +1,6 @@
+// Import sbt-assembly
+import sbtassembly.AssemblyPlugin.autoImport._
+
 import sbt.Keys.libraryDependencies
 
 ThisBuild / scalaVersion := "3.6.1"
@@ -20,6 +23,14 @@ lazy val root = (project in file("."))
     },
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.18",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % "test",
-    libraryDependencies += "junit" % "junit" % "4.13.2" % Test
+    libraryDependencies += "junit" % "junit" % "4.13.2" % Test,
+
+    assembly / assemblyJarName := s"${name.value}-${version.value}.jar",
+    assembly / mainClass := Some("Main"), // Replace with your Main class
+    assembly / test := {}, // Skip tests during assembly
+    assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    }
   )
 
