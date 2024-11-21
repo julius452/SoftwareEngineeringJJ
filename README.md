@@ -1,9 +1,11 @@
+## Current Release
+
+![Latest Release](https://img.shields.io/github/v/release/julius452/SoftwareEngineeringJJ?display_name=tag&color=blue)
+
 ## Pipelines
 
 [![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
 [![Release Pipeline](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/release.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/release.yml)
-
-![Latest Release](https://img.shields.io/github/v/release/julius452/SoftwareEngineeringJJ?display_name=tag)
 
 ## Coveralls.io
 [![coveralls.io](https://coveralls.io/repos/github/julius452/SoftwareEngineeringJJ/badge.svg?branch=master)](https://coveralls.io/github/julius452/SoftwareEngineeringJJ?branch=master)
