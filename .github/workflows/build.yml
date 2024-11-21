@@ -20,7 +20,7 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v3
       with:
-        java-version: '21' # or any other version your project requires
+        java-version: '21' 
         distribution: 'temurin'
 
     - name: Set up sbt
@@ -47,3 +47,24 @@ jobs:
         files: target/scala-*/scoverage-report/scoverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
+    - name: Fetch coverage change from Codecov
+      run: |
+        curl -s "https://codecov.io/api/gh/${{ github.repository }}" \
+          -H "Authorization: token ${{ secrets.CODECOV_TOKEN }}" \ v
+          -H "Accept: application/json" \
+          -G \
+          -d "branch=${{ github.ref_name }}" \ 
+          -o coverage_report.json  
+        
+        COVERAGE_CHANGE=$(jq '.commit' coverage_report.json)  
+        echo "Coverage change: $COVERAGE_CHANGE"
+        
+        # Update the README.md with coverage change info
+        sed -i "s/<!-- COVERAGE_CHANGE -->/$COVERAGE_CHANGE/" README.md 
+
+    - name: Commit and push updated README
+      run: |
+        git config --global user.email "juliuswuerges@gmail.com"
+        git config --global user.name "julius452"  # Dein Name
+        git commit -am "Update coverage info in README"  
+        git push 
