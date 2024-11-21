@@ -4,6 +4,8 @@
 
 https://codecov.io/github/julius452/SoftwareEngineeringJJ/graphs/sunburst.svg?token=1RD2DIMUZK
 
+![Coverage History](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/branch/master/graphs/commits.svg)
+
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
 ## Beschreibung
