@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
 
-[![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
+
 
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
