@@ -4,6 +4,13 @@
 
 ![Sunburst](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graphs/sunburst.svg?token=1RD2DIMUZK)
 
+## Coverage
+
+- ![Model Coverage](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/branch/master/graph/badge.svg?flag=model)
+- ![View Coverage](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/branch/master/graph/badge.svg?flag=view)
+- ![Controller Coverage](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/branch/master/graph/badge.svg?flag=controller)
+
+
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
 ## Beschreibung
