@@ -47,3 +47,39 @@ jobs:
         files: target/scala-*/scoverage-report/scoverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
+
+    - name: Run Tests for Model with Coverage
+      run: |
+        sbt clean coverage test -Dmodule=model
+        sbt coverageReport
+        sbt coverageAggregate
+
+    - name: Run Tests for View with Coverage
+      run: |
+        sbt clean coverage test -Dmodule=view
+        sbt coverageReport
+        sbt coverageAggregate
+
+    - name: Run Tests for Controller with Coverage
+      run: |
+        sbt clean coverage test -Dmodule=controller
+        sbt coverageReport
+        sbt coverageAggregate
+
+    - name: Upload Coverage for Model
+      uses: codecov/codecov-action@v3
+      with:
+        flags: model
+        files: target/scala-*/scoverage-report/scoverage.xml
+
+    - name: Upload Coverage for View
+      uses: codecov/codecov-action@v3
+      with:
+        flags: view
+        files: target/scala-*/scoverage-report/scoverage.xml
+
+    - name: Upload Coverage for Controller
+      uses: codecov/codecov-action@v3
+      with:
+        flags: controller
+        files: target/scala-*/scoverage-report/scoverage.xml
