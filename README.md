@@ -1,10 +1,20 @@
+## Pipelines
+
 [![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
 
+## Coveralls.io
 [![coveralls.io](https://coveralls.io/repos/github/julius452/SoftwareEngineeringJJ/badge.svg?branch=master)](https://coveralls.io/github/julius452/SoftwareEngineeringJJ?branch=master)
+
+
+## Codecov.io
 
 [![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
 
+### Sunburst anzeige:
+Die Sunburst-Darstellung visualisiert die Codeabdeckung dieses Projekts in einem kreisförmigen Diagramm, wobei jede Datei und jedes Verzeichnis durch einen Sektor repräsentiert wird. Die Farben (grün, gelb, rot) zeigen den Abdeckungsgrad an, wobei grün eine hohe Abdeckung und rot eine niedrige Abdeckung signalisiert. So lässt sich schnell erkennen, welche Teile des Codes gut getestet sind und welche verbessert werden müssen.
+
 ![Sunburst](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/graphs/sunburst.svg?token=1RD2DIMUZK)
+
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
 ## Beschreibung
