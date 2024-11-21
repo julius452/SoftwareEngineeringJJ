@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - master
-      - develop
 
 jobs:
   build:
@@ -40,3 +39,10 @@ jobs:
       with:
         name: coverage-report
         path: target/scala-*/scoverage-report
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: target/scala-*/scoverage-report/scoverage.xml
+        fail_ci_if_error: true
