@@ -17,7 +17,7 @@
 
 Das Projekt **Mensch ärgere dich nicht** ist eine Implementierung des klassischen Brettspiels, das im Rahmen der Vorlesung Software Engineering entwickelt wird. 
 Ziel des Projekts ist es, die Prinzipien der agilen Softwareentwicklung zu erlernen und anzuwenden, während wir die Funktionalitäten des Spiels implementieren. 
-Durch den Einsatz von Code Coverage und umfassenden Tests stellen wir sicher, dass der Code von hoher Qualität ist und alle Anforderungen erfüllt
+Durch den Einsatz von Code Coverage und umfassenden Tests stellen wir sicher, dass der Code von hoher Qualität ist und alle Anforderungen erfüllt.
 
 ## Zielsetzung
 
