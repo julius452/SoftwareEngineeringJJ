@@ -1,4 +1,4 @@
-name: Release .jar on Tag Push
+name: Release Pipeline
 
 on:
   push:
