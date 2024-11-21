@@ -4,21 +4,21 @@
 
 ## Pipelines
 
-[![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
-[![Release Pipeline](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/release.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/release.yml)
+- [![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
 
-## Coveralls.io
-[![coveralls.io](https://coveralls.io/repos/github/julius452/SoftwareEngineeringJJ/badge.svg?branch=master)](https://coveralls.io/github/julius452/SoftwareEngineeringJJ?branch=master)
+- [![Release Pipeline](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/release.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/release.yml)
 
+## Coverage
 
-## Codecov.io
+- Coveralls: [![coveralls.io](https://coveralls.io/repos/github/julius452/SoftwareEngineeringJJ/badge.svg?branch=master)](https://coveralls.io/github/julius452/SoftwareEngineeringJJ?branch=master)
+  
+- Codecov: [![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
 
-[![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
-
-### Sunburst anzeige:
-Die Sunburst-Darstellung visualisiert die Codeabdeckung dieses Projekts in einem kreisförmigen Diagramm, wobei jede Datei und jedes Verzeichnis durch einen Sektor repräsentiert wird. Die Farben (grün, gelb, rot) zeigen den Abdeckungsgrad an, wobei grün eine hohe Abdeckung und rot eine niedrige Abdeckung signalisiert. So lässt sich schnell erkennen, welche Teile des Codes gut getestet sind und welche verbessert werden müssen.
+### Sunburst:
 
 ![Sunburst](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/graphs/sunburst.svg?token=1RD2DIMUZK)
+
+Die Sunburst-Darstellung visualisiert die Codeabdeckung dieses Projekts in einem kreisförmigen Diagramm, wobei jede Datei und jedes Verzeichnis durch einen Sektor repräsentiert wird. Die Farben (grün, gelb, rot) zeigen den Abdeckungsgrad an, wobei grün eine hohe Abdeckung und rot eine niedrige Abdeckung signalisiert. So lässt sich schnell erkennen, welche Teile des Codes gut getestet sind und welche verbessert werden müssen.
 
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
