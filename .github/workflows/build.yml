@@ -41,6 +41,9 @@ jobs:
         name: coverage-report
         path: target/scala-*/scoverage-report
 
+    - name: Print coverage report
+      run: cat target/scala-*/scoverage-report/scoverage.xml
+    
     - name: Upload Coverage Report to Coveralls
       uses: coverallsapp/github-action@v2
       with:
