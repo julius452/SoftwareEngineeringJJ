@@ -1,9 +1,10 @@
 [![Scala CI with Coverage](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml/badge.svg)](https://github.com/julius452/SoftwareEngineeringJJ/actions/workflows/build.yml)
 
+[Latest Workflow Run](https://github.com/julius452/SoftwareEngineeringJJ/actions)
+
 [![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
 
 ![Sunburst](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graphs/sunburst.svg?token=1RD2DIMUZK)
-
 
 # Mensch ärgere dich nicht - Software Engineering Projekt
 
