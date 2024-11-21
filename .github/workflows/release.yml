@@ -28,6 +28,10 @@ jobs:
       run: |
         sbt clean compile package 
 
+    - name: List target directory
+      run: |
+        ls -l target/scala-* 
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
