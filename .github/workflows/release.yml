@@ -40,10 +40,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: target/scala-*/SoftwareEngineeringJJ-${{ env.VERSION }}.jar
-        body: |
-          ### Release Notes
-          - This release includes the compiled application as a runnable JAR.
-          - Use `java -jar SoftwareEngineeringJJ-${{ env.VERSION }}.jar` to run.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
