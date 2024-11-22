@@ -14,7 +14,7 @@
   
 - Codecov: [![codecov](https://codecov.io/github/julius452/SoftwareEngineeringJJ/graph/badge.svg?token=1RD2DIMUZK)](https://codecov.io/github/julius452/SoftwareEngineeringJJ)
 
-### Sunburst:
+### Sunburst
 
 ![Sunburst](https://codecov.io/gh/julius452/SoftwareEngineeringJJ/graphs/sunburst.svg?token=1RD2DIMUZK)
 
