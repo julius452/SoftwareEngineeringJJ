@@ -32,10 +32,6 @@ jobs:
       id: get_version
       run: echo "VERSION=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
 
-    - name: List target directory
-      run: |
-        ls -l target/scala-* 
-
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
