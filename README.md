@@ -1,6 +1,6 @@
 ## Current Release
 
-[![Latest Release](https://img.shields.io/github/v/release/julius452/SoftwareEngineeringJJ?display_name=tag&color=blue)](https://github.com/julius452/SoftwareEngineeringJJ/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/julius452/SoftwareEngineeringJJ?display_name=release&color=blue)](https://github.com/julius452/SoftwareEngineeringJJ/releases/latest)
 
 ## Pipelines
 
