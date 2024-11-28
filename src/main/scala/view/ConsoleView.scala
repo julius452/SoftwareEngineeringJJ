@@ -16,6 +16,29 @@ class ConsoleView extends Observer{
     return s"Name des Spielers $i:"
   }
 
+  def displayHappyWithPlayers(): String = {
+    return "Sind Sie mit den Spielernamen zufrieden? (j/n):"
+  }
+
+  def displayPlayers(players: List[Player]): String = {
+    val sb = new StringBuilder()
+    sb.append("\nSpieler:")
+    sb.append("\n")
+    for (player <- players) {
+      sb.append(s"\tSpieler ${player.getPlayerNumber()}: ${player.getPlayerName()}\n")
+    }
+
+    return sb.toString()
+  }
+
+  def displayChangePlayer(): String = {
+    return "Welchen Spieler möchten Sie ändern?:"
+  }
+
+  def displayAskForNewPlayerName(playerNumber: Int): String = {
+    return s"Neuer Name für Spieler $playerNumber:"
+  }
+
   def displayDetermineStartingPlayer(): String = {
     return "Um den Startspieler zu bestimmen, müssen alle Spieler einmal würfeln:"
   }

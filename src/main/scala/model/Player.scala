@@ -1,9 +1,14 @@
 package model
 
+import memento.PlayerMemento
+
 case class Player(playerId: Int, nameString: String) {
   private val playerIdAsString = Array("A", "B", "C", "D")
 
   private var id: String = playerIdAsString(playerId - 1)
+
+  private var number: Int = playerId
+
   private var name: String = nameString
 
   private var startHouse: Array[Field] = new Array[Field](4)
@@ -20,6 +25,12 @@ case class Player(playerId: Int, nameString: String) {
   def setPlayerName(playerName: String): Unit = {
     this.name = playerName
   }
+
+  def setPlayerNumber(playerNumber: Int): Unit = {
+    this.number = playerNumber
+  }
+
+  def getPlayerNumber(): Int = number
 
   def getPlayerId(): String = id
 
@@ -62,5 +73,13 @@ case class Player(playerId: Int, nameString: String) {
     val player = this.copy()
     player.initializeHousesAndPieces()
     player
+  }
+
+  // Zustand speichern
+  def save(): PlayerMemento = new PlayerMemento(name)
+
+  // Zustand wiederherstellen
+  def restore(memento: PlayerMemento): Unit = {
+    name = memento.getName
   }
 }
