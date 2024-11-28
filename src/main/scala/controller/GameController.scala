@@ -1,9 +1,10 @@
 package controller
 
 import model.{Dice, GameBoard, GameState, Player}
+import builder.GameStateBuilder
 import view.ConsoleView
 
-class GameController() {
+class GameController {
   private val consoleView = new ConsoleView()
   private val playerController = new PlayerController()
   private val gameBoardController = new GameBoardController()
@@ -17,11 +18,12 @@ class GameController() {
 
     println(consoleView.displayDivider())
 
-    val gameDice = Dice()
-    val gameBoard = GameBoard()
-    gameBoard.initializeGameBoard()
-
-    _gameState = GameState(players, gameDice, gameBoard)
+    // builder pattern
+    _gameState = new GameStateBuilder()
+      .buildDice()
+      .buildGameBoard()
+      .buildPlayers(players)
+      .build()
 
     // Observer hinzufügen
     _gameState.addObserver(consoleView)

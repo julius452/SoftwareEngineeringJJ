@@ -14,7 +14,6 @@ case class GameState(var playersList: List[Player], gameDice: Dice, gameBoard: G
   def updateCurrentPlayer(player: Player): Unit = {
     currentPlayer = player
     notifyObservers(this)
-
   }
 
   def getCurrentPlayer(): Player = currentPlayer

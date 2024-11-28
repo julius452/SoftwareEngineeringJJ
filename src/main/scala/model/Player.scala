@@ -3,8 +3,8 @@ package model
 case class Player(playerId: Int, nameString: String) {
   private val playerIdAsString = Array("A", "B", "C", "D")
 
-  def id: String = playerIdAsString(playerId - 1)
-  def name: String = nameString
+  private var id: String = playerIdAsString(playerId - 1)
+  private var name: String = nameString
 
   private var startHouse: Array[Field] = new Array[Field](4)
 
@@ -12,6 +12,18 @@ case class Player(playerId: Int, nameString: String) {
 
   private var house: Array[Field] = new Array[Field](4)
   def startPosition: Int = (playerId - 1) * 10
+
+  def setPlayerId(playerId: Int): Unit =  {
+    this.id = playerIdAsString(playerId - 1)
+  }
+
+  def setPlayerName(playerName: String): Unit = {
+    this.name = playerName
+  }
+
+  def getPlayerId(): String = id
+
+  def getPlayerName(): String = name
 
   def getStartHouse(): Array[Field] = startHouse
   def getHouse(): Array[Field] = house
@@ -44,5 +56,11 @@ case class Player(playerId: Int, nameString: String) {
     }
 
     true
+  }
+
+  override def clone():Player = {
+    val player = this.copy()
+    player.initializeHousesAndPieces()
+    player
   }
 }

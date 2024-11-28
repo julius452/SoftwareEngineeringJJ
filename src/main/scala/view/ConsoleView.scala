@@ -21,19 +21,19 @@ class ConsoleView extends Observer{
   }
 
   def displayAskPlayerToRoll(player: Player): String = {
-    return s"${player.name}, bitte würfeln (w):"
+    return s"${player.getPlayerName()}, bitte würfeln (w):"
   }
 
   def displayDiceRollResult(player: Player, roll: Int): String = {
-    return s"${player.name} hat eine $roll gewürfelt.\n"
+    return s"${player.getPlayerName()} hat eine $roll gewürfelt.\n"
   }
 
   def displayStartPlayer(player: Player): String = {
-    return s"${player.name} beginnt!\n"
+    return s"${player.getPlayerName()} beginnt!\n"
   }
 
   def displayTurnInfo(player: Player): String = {
-    return s"${player.name} ist am Zug."
+    return s"${player.getPlayerName()} ist am Zug."
   }
 
   def displayWrongInput(): String = {
@@ -41,7 +41,7 @@ class ConsoleView extends Observer{
   }
 
   def displayPlayerWon(player: Player): String = {
-    return s"\nGlückwunsch ${player.name} Du hat gewonnen!"
+    return s"\nGlückwunsch ${player.getPlayerName()} Du hat gewonnen!"
   }
 
   def displayPlayerCanEnterPiece(player: Player): String = {
@@ -56,14 +56,14 @@ class ConsoleView extends Observer{
     val sb = new StringBuilder()
 
     if (piece.getIsOnField()) {
-      return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) auf Feld ${piece.getField().getPosition()} kann ziehen."
+      return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) auf Feld ${piece.getField().getPosition()} kann ziehen."
     }
 
     if (piece.getIsInHome()) {
-      return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) kann im Haus ziehen."
+      return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) kann im Haus ziehen."
     }
 
-    return s"\tFigur ${piece.player.id + piece.id} (${piece.id}) kann auf das Spielfeld gesetzt werden."
+    return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) kann auf das Spielfeld gesetzt werden."
   }
 
   def displayGameBoard(gameState: GameState): String = {
@@ -90,7 +90,7 @@ class ConsoleView extends Observer{
       val field = gameState.board.getFields()(i)
 
       if (field.getIsOccupied()) {
-        boardFields(i) = s"${field.getPiece().get.player.id + field.getPiece().get.id}"
+        boardFields(i) = s"${field.getPiece().get.player.getPlayerId() + field.getPiece().get.id}"
       } else {
         boardFields(i) = s"${field.getValue()}"
       }
@@ -115,7 +115,7 @@ class ConsoleView extends Observer{
       val field = gameState.getCurrentPlayer().getHouse()(i)
 
       if (field.getIsOccupied()) {
-        houseFields(i) = s"${field.getPiece().get.player.id + field.getPiece().get.id}"
+        houseFields(i) = s"${field.getPiece().get.player.getPlayerId() + field.getPiece().get.id}"
       } else {
         houseFields(i) = s"${field.getValue()}"
       }
@@ -140,7 +140,7 @@ class ConsoleView extends Observer{
       val field = gameState.getCurrentPlayer().getStartHouse()(i)
 
       if (field.getIsOccupied()) {
-        startHouseFields(i) = s"${field.getPiece().get.player.id + field.getPiece().get.id}"
+        startHouseFields(i) = s"${field.getPiece().get.player.getPlayerId() + field.getPiece().get.id}"
       } else {
         startHouseFields(i) = s"${field.getValue()}"
       }
@@ -153,7 +153,7 @@ class ConsoleView extends Observer{
   }
 
   def displayPlayerCanRollAgain(player: Player): String = {
-    return s"${player.name} hat eine 6 gewürfelt und darf nochmal würfeln.\n"
+    return s"${player.getPlayerName()} hat eine 6 gewürfelt und darf nochmal würfeln.\n"
   }
 
   def displayDivider(): String = {

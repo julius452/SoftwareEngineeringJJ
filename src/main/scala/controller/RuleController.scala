@@ -40,7 +40,7 @@ class RuleController() {
       val landingField = gameState.board.getFields()(landingIndex)
       if (landingField.getIsOccupied()) {
         val standingPlayer = landingField.getPiece().get.player
-        if (standingPlayer.id.equals(piece.player.id)) {
+        if (standingPlayer.getPlayerId().equals(piece.player.getPlayerId())) {
           return false
         } else {
           return true
