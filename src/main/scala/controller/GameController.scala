@@ -2,6 +2,7 @@ package controller
 
 import model.{Dice, GameBoard, GameState, Player}
 import builder.GameStateBuilder
+import state.{GamePhase, MovePhase, RollingPhase}
 import view.ConsoleView
 
 class GameController {
@@ -13,6 +14,9 @@ class GameController {
   private var _gameState: GameState = _ //will be initialized in startNewGame
 
   def startNewGame(): Unit = {
+
+
+
     // Spieler initialisieren
     val players = playerController.initializePlayers()
 
@@ -34,6 +38,9 @@ class GameController {
     println(consoleView.displayDivider())
 
     _gameState.updateCurrentPlayer(startingPlayer)
+
+    // Spielzustand setzen
+    _gameState.setPhase(new RollingPhase())
 
     startGame();
   }
@@ -74,8 +81,15 @@ class GameController {
       if (currentPlayer.checkIfAllPiecesOffField()) {
         gameOpening(currentPlayer)
       } else {
-        askToRollDice(currentPlayer)
-        executePlayerTurn()
+        //askToRollDice(currentPlayer)
+        //executePlayerTurn()
+        // RollingPhase ausführen
+        _gameState.setPhase(new RollingPhase())
+        _gameState.executeCurrentPhase(this) // Spieler würfelt in der RollingPhase
+
+        // MovePhase ausführen
+        _gameState.setPhase(new MovePhase())
+        _gameState.executeCurrentPhase(this) // Spieler bewegt eine Figur in der MovePhase
       }
 
       if (_gameState.dice.getLastRoll() != 6) {
@@ -106,41 +120,32 @@ class GameController {
   def executePlayerTurn(): Unit = {
     println(consoleView.displayGameBoard(_gameState))
 
-    // for (piece <- gameState.currentPlayer.pieces) {
-    //  valdiateMove(piece, gameState)
+    val currentPlayer = _gameState.getCurrentPlayer()
+    println(consoleView.displayPlayerCanEnterPiece(currentPlayer))
 
-
-    println(consoleView.displayPlayerCanEnterPiece(_gameState.getCurrentPlayer()))
-    for (piece <- _gameState.getCurrentPlayer().getPieces()) {
-      if (ruleController.validateMove(piece, _gameState)) {
+    // Bewegungsmöglichkeiten anzeigen
+    val validMoves = currentPlayer.getPieces().zipWithIndex.collect {
+      case (piece, index) if ruleController.validateMove(piece, _gameState) =>
         println(consoleView.displayValideMove(piece))
-      }
+        index + 1
+    }
+
+    if (validMoves.isEmpty) {
+      println("Fehler")
+      return
     }
 
     println(consoleView.displayWhichPieceToMove())
-    //println(consoleView.displayPlayerPossibleMoves(gameState.currentPlayer))
-
     val input = scala.io.StdIn.readInt()
 
-    val pieceToRun = _gameState.getCurrentPlayer().getPieces()(input-1)
+    val selectedPiece = currentPlayer.getPieces()(input - 1)
 
-    if (!pieceToRun.getIsOnField()) {
-      gameBoardController.movePiece(_gameState, _gameState.getCurrentPlayer().getPieces()(input-1), _gameState.dice.getLastRoll())
-      println(consoleView.displayGameBoard(_gameState))
-      return
-    }
+    // Strategie zum Bewegen der Figur anwenden
+    ruleController.executeMove(selectedPiece, _gameState)
 
-    val landingField = _gameState.board.getFields()((pieceToRun.getField().getPosition() + _gameState.dice.getLastRoll()) % _gameState.board.getFields().length)
-
-    if (ruleController.checkCollision(pieceToRun, landingField, _gameState)) {
-      gameBoardController.throwPlayerOut(landingField.getPiece().get.player, pieceToRun, landingField, _gameState)
-      println(consoleView.displayGameBoard(_gameState))
-      return
-    }
-
-    gameBoardController.movePiece(_gameState, pieceToRun, _gameState.dice.getLastRoll())
-    //println(consoleView.displayGameBoard(_gameState))
+    println(consoleView.displayGameBoard(_gameState))
   }
+
 }
 
 
