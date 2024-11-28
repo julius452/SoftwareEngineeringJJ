@@ -25,7 +25,6 @@ class PlayerController() {
 
     // Prototype pattern
     val initPlayer = Player(1, "")
-    initPlayer.initializeHousesAndPieces()
 
     for (i <- 1 to playersCount) {
       println(consoleView.displayAskForPlayerName(i))
