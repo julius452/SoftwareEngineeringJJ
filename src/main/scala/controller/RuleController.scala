@@ -33,7 +33,7 @@ class RuleController() {
 
 
   def isStartFieldFree(player: Player, gameState: GameState): Boolean = {
-    val startField = gameState.board.getFields()(player.startPosition)
+    val startField = gameState.board.getFields()(player.getStartPosition())
     if (startField.getIsOccupied()) { //startField.piece.get.player.id.equals(player.id)
       return false
     } else {

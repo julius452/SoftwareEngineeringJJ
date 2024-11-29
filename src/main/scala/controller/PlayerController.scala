@@ -34,7 +34,13 @@ class PlayerController() {
       val playerName = scala.io.StdIn.readLine()
 
       // work with clone
-      val newPlayer = Player(i, playerName)
+      //val newPlayer = Player(i, playerName)
+      val newPlayer = initPlayer.makeClone()
+      newPlayer.setPlayerId(i)
+      newPlayer.setPlayerNumber(i)
+      newPlayer.setPlayerName(playerName)
+      newPlayer.setStartPosition(i)
+
       newPlayer.initializeHousesAndPieces()
 
       // Memento pattern

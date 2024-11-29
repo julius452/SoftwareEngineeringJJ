@@ -39,7 +39,7 @@ class GameBoardController {
       }
     }
     else {
-      val start = piece.player.startPosition
+      val start = piece.player.getStartPosition()
       val fields = gameState.board.getFields()
 
       val startField = fields(start)
