@@ -2,7 +2,7 @@ package builder
 
 import model.{Dice, GameBoard, GameState, Player}
 
-class GameStateBuilder {
+class GameStateBuilder extends StateBuilder {
   private var playersList: List[Player] = List.empty
   private var gameDice: Dice = _
   private var gameBoard: GameBoard = _

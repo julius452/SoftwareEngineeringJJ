@@ -16,6 +16,32 @@ class ConsoleView extends Observer{
     return s"Name des Spielers $i:"
   }
 
+  def displayPlayerInfos(player: Player): String = {
+    val sb = new StringBuilder()
+    sb.append("NAme: " + player.getPlayerName())
+    sb.append("\nPlayerId: " + player.getPlayerId())
+    sb.append("\nNumber: " + player.getPlayerNumber())
+    sb.append("\nPieces: " + player.getPieces().length) // Print count
+    for (i <- player.getPieces().indices) {
+      val piece = player.getPieces()(i)
+      sb.append(s"\n  Piece $i: isOnField = ${piece.getIsOnField()}, currentField = ${piece.getField().getPosition()}")
+    }
+
+    sb.append("\nHouse: " + player.getHouse().length) // Print count
+    for (i <- player.getHouse().indices) {
+      val field = player.getHouse()(i)
+      sb.append(s"\n  House $i: isOccupied = ${field.getIsOccupied()}, Value = ${field.getValue()}")
+    }
+
+    sb.append("\nStartHouse: " + player.getStartHouse().length) // Print count
+    for (i <- player.getStartHouse().indices) {
+      val field = player.getStartHouse()(i)
+      sb.append(s"\n  StartHouse $i: isOccupied = ${field.getIsOccupied()}, Value = ${field.getValue()}")
+    }
+
+    sb.toString()
+  }
+
   def displayHappyWithPlayers(): String = {
     return "Sind Sie mit den Spielernamen zufrieden? (j/n):"
   }

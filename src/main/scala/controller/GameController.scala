@@ -14,9 +14,6 @@ class GameController {
   private var _gameState: GameState = _ //will be initialized in startNewGame
 
   def startNewGame(): Unit = {
-
-
-
     // Spieler initialisieren
     val players = playerController.initializePlayers()
 
@@ -145,7 +142,6 @@ class GameController {
 
     println(consoleView.displayGameBoard(_gameState))
   }
-
 }
 
 

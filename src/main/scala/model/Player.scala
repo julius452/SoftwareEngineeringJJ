@@ -3,9 +3,10 @@ package model
 import memento.PlayerMemento
 
 case class Player(playerId: Int, nameString: String) {
+
   private val playerIdAsString = Array("A", "B", "C", "D")
 
-  private var id: String = playerIdAsString(playerId - 1)
+  private var id: String = ""//playerIdAsString(playerId - 1)
 
   private var number: Int = playerId
 
@@ -69,17 +70,11 @@ case class Player(playerId: Int, nameString: String) {
     true
   }
 
-  override def clone():Player = {
-    val player = this.copy()
-    player.initializeHousesAndPieces()
-    player
-  }
-
   // Zustand speichern
   def save(): PlayerMemento = new PlayerMemento(name)
 
   // Zustand wiederherstellen
   def restore(memento: PlayerMemento): Unit = {
-    name = memento.getName
+    name = memento.getName()
   }
 }
