@@ -26,21 +26,12 @@ class PlayerController() {
 
     var players = List[Player]()
 
-    // Prototype pattern
-    val initPlayer = Player(1, "Prototype")
-
     for (i <- 1 to playersCount) {
       println(consoleView.displayAskForPlayerName(i))
       val playerName = scala.io.StdIn.readLine()
 
-      // work with clone
       //val newPlayer = Player(i, playerName)
-      val newPlayer = initPlayer.makeClone()
-      newPlayer.setPlayerId(i)
-      newPlayer.setPlayerNumber(i)
-      newPlayer.setPlayerName(playerName)
-      newPlayer.setStartPosition(i)
-
+      val newPlayer = Player(i, playerName)
       newPlayer.initializeHousesAndPieces()
 
       // Memento pattern

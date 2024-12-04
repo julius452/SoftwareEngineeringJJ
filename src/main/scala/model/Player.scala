@@ -1,13 +1,12 @@
 package model
 
 import memento.PlayerMemento
-import prototype.Prototype
 
-case class Player(playerId: Int, nameString: String) extends Prototype[Player]{
+case class Player(playerId: Int, nameString: String){
 
   private val playerIdAsString = Array("A", "B", "C", "D")
 
-  private var id: String = ""//playerIdAsString(playerId - 1)
+  private var id: String = playerIdAsString(playerId - 1)
 
   private var number: Int = playerId
 
@@ -19,22 +18,10 @@ case class Player(playerId: Int, nameString: String) extends Prototype[Player]{
 
   private var house: Array[Field] = new Array[Field](4)
 
-  private var startPosition: Int = 0
-
-  def setPlayerId(playerId: Int): Unit =  {
-    this.id = playerIdAsString(playerId - 1)
-  }
+  private var startPosition: Int = (playerId - 1) * 10
 
   def setPlayerName(playerName: String): Unit = {
     this.name = playerName
-  }
-
-  def setPlayerNumber(playerNumber: Int): Unit = {
-    this.number = playerNumber
-  }
-
-  def setStartPosition(playerId: Int): Unit = {
-    this.startPosition = (playerId - 1) * 10
   }
 
   def getStartPosition(): Int = {
@@ -86,22 +73,5 @@ case class Player(playerId: Int, nameString: String) extends Prototype[Player]{
   // Zustand wiederherstellen
   def restore(memento: PlayerMemento): Unit = {
     name = memento.getName()
-  }
-
-  override def makeClone(): Player = {
-    new Player(this)
-  }
-
-  def this(source: Player) = {
-    this(source.playerId, source.name)
-
-    this.id = source.id
-    this.name = source.name
-    this.startPosition = source.startPosition
-    this.number = source.number
-
-    this.startHouse = new Array[Field](4)
-    this.pieces = new Array[Piece](4)
-    this.house = new Array[Field](4)
   }
 }
