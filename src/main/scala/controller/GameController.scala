@@ -3,19 +3,19 @@ package controller
 import model.{Dice, GameBoard, GameState, Player}
 import builder.GameStateBuilder
 import state.{GamePhase, MovePhase, RollingPhase}
-import view.ConsoleView
+import view.{ConsoleView, InputHandler}
 
 class GameController {
   private val consoleView = new ConsoleView()
   private val playerController = new PlayerController()
-  private val gameBoardController = new GameBoardController()
   private val ruleController = new RuleController()
+  private val inputHandler = new InputHandler()
 
   private var _gameState: GameState = _ //will be initialized in startNewGame
 
   def startNewGame(): Unit = {
     // Spieler initialisieren
-    val players = playerController.initializePlayers()
+    val players = playerController.displayInitializePlayers()
 
     println(consoleView.displayDivider())
 
@@ -59,7 +59,7 @@ class GameController {
   def askToRollDice(player: Player): Unit = {
     print(consoleView.displayAskPlayerToRoll(player))
 
-    while (scala.io.StdIn.readLine() != "w"){
+    while (inputHandler.readLine() != "w"){
       print(consoleView.displayWrongInput())
       print(consoleView.displayAskPlayerToRoll(player))
     }
@@ -78,8 +78,6 @@ class GameController {
       if (currentPlayer.checkIfAllPiecesOffField()) {
         gameOpening(currentPlayer)
       } else {
-        //askToRollDice(currentPlayer)
-        //executePlayerTurn()
         // RollingPhase ausführen
         _gameState.setPhase(new RollingPhase())
         _gameState.executeCurrentPhase(this) // Spieler würfelt in der RollingPhase
@@ -133,7 +131,7 @@ class GameController {
     }
 
     println(consoleView.displayWhichPieceToMove())
-    val input = scala.io.StdIn.readInt()
+    val input = inputHandler.readInt()
 
     val selectedPiece = currentPlayer.getPieces()(input - 1)
 

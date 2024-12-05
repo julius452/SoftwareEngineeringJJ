@@ -2,19 +2,18 @@ package controller
 
 import memento.Caretaker
 import model.Player
-import view.ConsoleView
+import view.{ConsoleView, InputHandler}
 
 class PlayerController() {
   private val consoleView = new ConsoleView()
-  def initializePlayers(): List[Player] = {
-    val caretaker = new Caretaker()
-
+  private val inputHandler = new InputHandler()
+  def displayInitializePlayers(): List[Player] = {
     println(consoleView.displayAskForPlayersCount())
 
     var inputValid = false
     var playersCount = 0
     while (!inputValid) {
-      playersCount = scala.io.StdIn.readInt()
+      playersCount = inputHandler.readInt()
 
       if (playersCount >= 2 && playersCount <= 4) {
         inputValid = true
@@ -24,13 +23,17 @@ class PlayerController() {
       }
     }
 
+    ininitializerPlayers(playersCount)
+  }
+
+  def ininitializerPlayers(playerCount: Int): List[Player] = {
     var players = List[Player]()
+    val caretaker = new Caretaker()
 
-    for (i <- 1 to playersCount) {
+    for (i <- 1 to playerCount) {
       println(consoleView.displayAskForPlayerName(i))
-      val playerName = scala.io.StdIn.readLine()
+      val playerName = inputHandler.readLine()
 
-      //val newPlayer = Player(i, playerName)
       val newPlayer = Player(i, playerName)
       newPlayer.initializeHousesAndPieces()
 
@@ -42,7 +45,7 @@ class PlayerController() {
 
     happyWithPlayers(players, caretaker)
 
-    return players
+    players
   }
 
   def happyWithPlayers(players: List[Player], caretaker: Caretaker): Unit = {
@@ -52,7 +55,7 @@ class PlayerController() {
       println(consoleView.displayPlayers(players))
       println(consoleView.displayHappyWithPlayers())
 
-      val happy = scala.io.StdIn.readLine()
+      val happy = inputHandler.readLine()
 
       if (happy == "j") {
         isHappy = true
@@ -69,7 +72,7 @@ class PlayerController() {
 
       println(consoleView.displayAskForNewPlayerName(playerNumberToChange))
 
-      val newPlayerName = scala.io.StdIn.readLine()
+      val newPlayerName = inputHandler.readLine()
 
       caretaker.save(player)
       player.setPlayerName(newPlayerName)

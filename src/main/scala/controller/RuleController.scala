@@ -6,8 +6,6 @@ import strategy.{MoveStrategy, NormalMoveStrategy, CollisionMoveStrategy}
 class RuleController() {
   private val gameBoardController = new GameBoardController()
 
-
-
   def executeMove(piece: Piece, gameState: GameState): Unit = {
     val steps = gameState.dice.getLastRoll()
     val landingField = gameState.board.getFields()((piece.getField().getPosition() + steps) % gameState.board.getFields().length)
