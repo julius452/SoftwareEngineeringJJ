@@ -98,26 +98,26 @@ class GameController {
   }
 
   def postMoveOptions(): Boolean = {
-    println("Möchten Sie den Zug rückgängig machen? Drücken Sie (u) für Ja, oder eine andere Taste für Nein.")
+    println(consoleView.displayUndoOption())
     val input = scala.io.StdIn.readLine().toLowerCase
 
     var isUndo = false
     input match {
       case "u" => isUndo = undoStep()
-      case _ => println("Der nächste Zug wird ausgeführt.")
+      case _ => println(consoleView.displayNextMove())
     }
 
     isUndo
   }
 
   def postRedoOption(): Boolean = {
-    println("Möchten Sie den letzten Zug wiederherstellen? Drücken Sie (r) für Ja, oder eine andere Taste für Nein.")
+    println(consoleView.displayRedoOption())
     val input = scala.io.StdIn.readLine().toLowerCase
 
     var isRedo = false
     input match {
       case "r" => isRedo = redoStep()
-      case _ => println("Der nächste Zug wird ausgeführt.")
+      case _ => println(consoleView.displayNextMove())
     }
 
     isRedo
@@ -163,8 +163,7 @@ class GameController {
     }
 
     if (validMoves.isEmpty) {
-      println("Keine gültigen Züge für den Spieler.")
-      // _gameState.nextTurn() // Spielerwechsel, wenn kein Zug möglich ist.
+      println(consoleView.displaNoValidMoves())
       return
     }
 
