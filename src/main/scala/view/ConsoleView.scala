@@ -227,4 +227,16 @@ class ConsoleView extends Observer{
   def displayRedoOption(): String = {
     "Möchten Sie den letzten Zug wiederherstellen? Drücken Sie (r) für Ja, oder eine andere Taste für Nein."
   }
+
+  def displayErrorUndo(): String = {
+    "Kein Zug zum Rückgängig machen."
+  }
+
+  def displayErrorRedo(): String = {
+    "Kein Zug zum Wiederholen."
+  }
+
+  def displayError(): String = {
+    "Fehler beim Wiederholen des Befehls: ${exception.getMessage}"
+  }
 }
