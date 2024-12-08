@@ -1,17 +1,40 @@
 package model
 
-case class Player(playerId: Int, nameString: String) {
+import memento.PlayerMemento
+
+case class Player(playerId: Int, nameString: String){
+
   private val playerIdAsString = Array("A", "B", "C", "D")
 
-  def id: String = playerIdAsString(playerId - 1)
-  def name: String = nameString
+  private var id: String = playerIdAsString(playerId - 1)
+
+  private var number: Int = playerId
+
+  private var name: String = nameString
 
   private var startHouse: Array[Field] = new Array[Field](4)
 
   private var pieces: Array[Piece] = new Array[Piece](4)
 
   private var house: Array[Field] = new Array[Field](4)
-  def startPosition: Int = (playerId - 1) * 10
+
+  private var startPosition: Int = (playerId - 1) * 10
+
+
+
+  def setPlayerName(playerName: String): Unit = {
+    this.name = playerName
+  }
+
+  def getStartPosition(): Int = {
+    this.startPosition
+  }
+
+  def getPlayerNumber(): Int = number
+
+  def getPlayerId(): String = id
+
+  def getPlayerName(): String = name
 
   def getStartHouse(): Array[Field] = startHouse
   def getHouse(): Array[Field] = house
@@ -44,5 +67,13 @@ case class Player(playerId: Int, nameString: String) {
     }
 
     true
+  }
+
+  // Zustand speichern
+  def save(): PlayerMemento = new PlayerMemento(name)
+
+  // Zustand wiederherstellen
+  def restore(memento: PlayerMemento): Unit = {
+    name = memento.getName()
   }
 }

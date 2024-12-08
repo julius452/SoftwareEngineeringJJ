@@ -8,8 +8,8 @@ class PlayerSpec extends AnyWordSpec with Matchers {
 
     "initialize with the correct player ID and name" in {
       val player = Player(1, "Player1")
-      player.id shouldBe "A"
-      player.name shouldBe "Player1"
+      player.getPlayerId() shouldBe "A"
+      player.getPlayerName() shouldBe "Player1"
     }
 
     "initialize houses and pieces correctly" in {
@@ -36,7 +36,7 @@ class PlayerSpec extends AnyWordSpec with Matchers {
 
     "return the correct start position" in {
       val player = Player(1, "Player1")
-      player.startPosition shouldBe 0
+      player.getStartPosition() shouldBe 0
     }
 
     "check if all pieces are off the field correctly" in {

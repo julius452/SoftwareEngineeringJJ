@@ -43,7 +43,7 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
       isFree shouldBe true
 
       // Setzen wir das Startfeld von Player1 auf belegt
-      gameBoard.getFields()(player1.startPosition).setIsOccupied(true)
+      gameBoard.getFields()(player1.getStartPosition()).setIsOccupied(true)
       val isFreeAfterOccupation = ruleController.isStartFieldFree(player1, gameState)
 
       // Jetzt ist das Startfeld besetzt, daher sollte false zurückgegeben werden
@@ -67,7 +67,7 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
       gameState.dice.setLastRoll(6)
 
       // Sicherstellen, dass das Startfeld frei ist
-      val startField = gameState.board.getFields()(piece1.player.startPosition)
+      val startField = gameState.board.getFields()(piece1.player.getStartPosition())
       startField.setIsOccupied(false)  // Setze sicher, dass das Startfeld frei ist
 
       // Es wird geprüft, ob der Zug gültig ist, wenn die Spielfigur nicht auf dem Feld ist und eine 6 geworfen wird
@@ -90,7 +90,7 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
       gameState.dice.setLastRoll(6)  // 6 für den Eintritt ins Spiel
 
       // Setze das Startfeld von Player1 auf besetzt
-      gameBoard.getFields()(piece1.player.startPosition).setIsOccupied(true)
+      gameBoard.getFields()(piece1.player.getStartPosition()).setIsOccupied(true)
 
       // Der Zug sollte nicht gültig sein, weil das Startfeld besetzt ist
       ruleController.validateMove(piece1, gameState) shouldBe false

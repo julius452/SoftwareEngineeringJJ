@@ -1,6 +1,21 @@
 package model
 
-case class GameState(var playersList: List[Player], gameDice: Dice, gameBoard: GameBoard) {
+import controller.GameController
+import util.Observable
+import state.{GamePhase, StartPhase}
+
+case class GameState(var playersList: List[Player], gameDice: Dice, gameBoard: GameBoard) extends Observable{
+
+  private var currentPhase: GamePhase = new StartPhase()
+
+  def setPhase(phase: GamePhase): Unit = {
+    currentPhase = phase
+  }
+
+
+  def executeCurrentPhase(gameController: GameController): Unit = {
+    currentPhase.executePhase(gameController, this)
+  }
   def players: List[Player] = playersList
 
   private var currentPlayer: Player = players.head
@@ -11,12 +26,14 @@ case class GameState(var playersList: List[Player], gameDice: Dice, gameBoard: G
 
   def updateCurrentPlayer(player: Player): Unit = {
     currentPlayer = player
+    notifyObservers(this)
   }
 
   def getCurrentPlayer(): Player = currentPlayer
 
   def updateRunningState(isRunning: Boolean): Unit = {
     this.isRunning = isRunning
+    notifyObservers(this)
   }
 
   def getRunningState(): Boolean = isRunning
