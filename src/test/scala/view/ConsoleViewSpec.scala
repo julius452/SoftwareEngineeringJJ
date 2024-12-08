@@ -37,7 +37,7 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
     "display the starting player" in {
       val player = Player(1, "Player1")
       val view = new ConsoleView()
-      view.displayStartPlayer(player) shouldBe "Player1 beginnt!"
+      view.displayStartPlayer(player) shouldBe "Player1 beginnt!\n"
     }
 
     "display the turn information" in {
@@ -60,7 +60,7 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
     "display player can enter a piece" in {
       val player = Player(1, "Player1")
       val view = new ConsoleView()
-      view.displayPlayerCanEnterPiece(player) shouldBe "\nMögliche Züge:"
+      view.displayPlayerCanEnterPiece(player) shouldBe "Mögliche Züge:"
     }
 
     "prompt for which piece to move" in {
@@ -129,12 +129,12 @@ class ConsoleViewSpec extends AnyWordSpec with Matchers {
     "display player can roll again if they rolled a 6" in {
       val player = Player(1, "Player1")
       val view = new ConsoleView()
-      view.displayPlayerCanRollAgain(player) shouldBe "\nPlayer1 hat eine 6 gewürfelt und darf nochmal würfeln."
+      view.displayPlayerCanRollAgain(player) shouldBe "Player1 hat eine 6 gewürfelt und darf nochmal würfeln.\n"
     }
 
     "display a divider" in {
       val view = new ConsoleView()
-      view.displayDivider() shouldBe "\n" + ("-" * 70) + "\n"
+      view.displayDivider() shouldBe ("-" * 70) + "\n"
     }
   }
 }
