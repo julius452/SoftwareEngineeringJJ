@@ -6,7 +6,7 @@ import view.ConsoleView
 class CommandManager {
   private var undoStack: List[Command] = Nil
   private var redoStack: List[Command] = Nil
-  private var consoleView = new ConsoleView()
+  private val consoleView = new ConsoleView()
 
   def doStep(command: Command): Try[Unit] = {
     Try {
@@ -41,6 +41,7 @@ class CommandManager {
         }
     }
   }
+  
 
   def redoStep(): Try[Unit] = {
     redoStack match {
