@@ -4,6 +4,8 @@ import memento.Caretaker
 import model.Player
 import view.ConsoleView
 
+import scala.util.Try
+
 class PlayerController() {
   private val consoleView = new ConsoleView()
   def initializePlayers(): List[Player] = {
@@ -14,13 +16,14 @@ class PlayerController() {
     var inputValid = false
     var playersCount = 0
     while (!inputValid) {
-      playersCount = scala.io.StdIn.readInt()
+      Try {
+        playersCount = scala.io.StdIn.readInt()
+      }.recover {
+        case e: NumberFormatException => println(consoleView.displayWrongInput() + consoleView.displayAskForPlayersCount())
+      }
 
       if (playersCount >= 2 && playersCount <= 4) {
         inputValid = true
-      } else {
-        println(consoleView.displayWrongInput())
-        println(consoleView.displayAskForPlayersCount())
       }
     }
 

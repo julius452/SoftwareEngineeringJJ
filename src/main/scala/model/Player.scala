@@ -20,6 +20,8 @@ case class Player(playerId: Int, nameString: String){
 
   private var startPosition: Int = (playerId - 1) * 10
 
+
+
   def setPlayerName(playerName: String): Unit = {
     this.name = playerName
   }

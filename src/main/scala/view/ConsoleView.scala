@@ -211,4 +211,32 @@ class ConsoleView extends Observer{
     sb.append("\n")
     return sb.toString()
   }
+
+  def displaNoValidMoves(): String = {
+    "Keine gültigen Züge für den Spieler."
+  }
+
+  def displayNextMove(): String = {
+    "Der nächste Zug wird ausgeführt."
+  }
+
+  def displayUndoOption(): String = {
+    "Möchten Sie den Zug rückgängig machen? Drücken Sie (u) für Ja, oder eine andere Taste für Nein."
+  }
+
+  def displayRedoOption(): String = {
+    "Möchten Sie den letzten Zug wiederherstellen? Drücken Sie (r) für Ja, oder eine andere Taste für Nein."
+  }
+
+  def displayErrorUndo(): String = {
+    "Kein Zug zum Rückgängig machen."
+  }
+
+  def displayErrorRedo(): String = {
+    "Kein Zug zum Wiederholen."
+  }
+
+  def displayError(): String = {
+    "Fehler beim Wiederholen des Befehls: ${exception.getMessage}"
+  }
 }

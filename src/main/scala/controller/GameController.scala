@@ -1,102 +1,138 @@
 package controller
 
-import model.{Dice, GameBoard, GameState, Player}
+import model.{Dice, GameBoard, GameState, Piece, Player}
 import builder.GameStateBuilder
+import command.{CommandManager, MovePieceCommand}
 import state.{GamePhase, MovePhase, RollingPhase}
 import view.ConsoleView
+
+import scala.util.{Failure, Success}
 
 class GameController {
   private val consoleView = new ConsoleView()
   private val playerController = new PlayerController()
   private val gameBoardController = new GameBoardController()
   private val ruleController = new RuleController()
-
-  private var _gameState: GameState = _ //will be initialized in startNewGame
+  private val commandManager = new CommandManager() // CommandManager einbinden
+  private var _gameState: GameState = _ // Wird in startNewGame initialisiert
 
   def startNewGame(): Unit = {
-    // Spieler initialisieren
     val players = playerController.initializePlayers()
-
     println(consoleView.displayDivider())
 
-    // builder pattern
     _gameState = new GameStateBuilder()
       .buildDice()
       .buildGameBoard()
       .buildPlayers(players)
       .build()
 
-    // Observer hinzufügen
     _gameState.addObserver(consoleView)
-
-    // Startspieler bestimmen
     val startingPlayer = determineStartingPlayer(players)
-
     println(consoleView.displayDivider())
 
     _gameState.updateCurrentPlayer(startingPlayer)
-
-    // Spielzustand setzen
     _gameState.setPhase(new RollingPhase())
 
-    startGame();
+    gameLoop()
   }
 
   def determineStartingPlayer(players: List[Player]): Player = {
-    println(consoleView.displayDetermineStartingPlayer())
-
     val playersWithRolls = players.map { player =>
       askToRollDice(player)
       (player, _gameState.dice.getLastRoll())
     }
 
-    val startingPlayer = playersWithRolls.maxBy(_._2)._1;
+    val startingPlayer = playersWithRolls.maxBy(_._2)._1
     println(consoleView.displayStartPlayer(startingPlayer))
-
-    return startingPlayer
+    startingPlayer
   }
 
   def askToRollDice(player: Player): Unit = {
     print(consoleView.displayAskPlayerToRoll(player))
 
-    while (scala.io.StdIn.readLine() != "w"){
+    while (scala.io.StdIn.readLine() != "w") {
       print(consoleView.displayWrongInput())
       print(consoleView.displayAskPlayerToRoll(player))
     }
 
     _gameState.dice.rollDice()
-
     println(consoleView.displayDiceRollResult(player, _gameState.dice.getLastRoll()))
   }
 
-  def startGame(): Unit = {
-    while (_gameState.getRunningState()) {
-      val currentPlayer = _gameState.getCurrentPlayer()
+  def gameLoop(): Unit = {
+    var isUndo = false
 
+    while (_gameState.getRunningState()) {
+      if (isUndo) {
+        val isRedo = postRedoOption()
+
+        if (isRedo) {
+          _gameState.nextTurn()
+          isUndo = false
+        }
+      }
+
+      val currentPlayer = _gameState.getCurrentPlayer()
       println(consoleView.displayTurnInfo(currentPlayer))
 
       if (currentPlayer.checkIfAllPiecesOffField()) {
+        isUndo = false
         gameOpening(currentPlayer)
       } else {
-        //askToRollDice(currentPlayer)
-        //executePlayerTurn()
-        // RollingPhase ausführen
+        isUndo = false
         _gameState.setPhase(new RollingPhase())
-        _gameState.executeCurrentPhase(this) // Spieler würfelt in der RollingPhase
+        _gameState.executeCurrentPhase(this) // Spieler würfelt
 
-        // MovePhase ausführen
         _gameState.setPhase(new MovePhase())
-        _gameState.executeCurrentPhase(this) // Spieler bewegt eine Figur in der MovePhase
+        _gameState.executeCurrentPhase(this) // Spieler bewegt eine Figur
+
+        isUndo = postMoveOptions() // Option für Undo/Redo nach jedem Zug
       }
 
-      if (_gameState.dice.getLastRoll() != 6) {
+      if (_gameState.gameDice.getLastRoll() != 6 && !isUndo) {
         _gameState.nextTurn()
-      } else {
-        println(consoleView.displayPlayerCanRollAgain(currentPlayer))
       }
 
       println(consoleView.displayDivider())
     }
+  }
+
+  def postMoveOptions(): Boolean = {
+    println(consoleView.displayUndoOption())
+    val input = scala.io.StdIn.readLine().toLowerCase
+
+    var isUndo = false
+    input match {
+      case "u" => isUndo = undoStep()
+      case _ => println(consoleView.displayNextMove())
+    }
+
+    isUndo
+  }
+
+  def postRedoOption(): Boolean = {
+    println(consoleView.displayRedoOption())
+    val input = scala.io.StdIn.readLine().toLowerCase
+
+    var isRedo = false
+    input match {
+      case "r" => isRedo = redoStep()
+      case _ => println(consoleView.displayNextMove())
+    }
+
+    isRedo
+  }
+
+  def undoStep(): Boolean = {
+    commandManager.undoStep()
+    println(consoleView.displayGameBoard(_gameState))
+    true
+  }
+
+  def redoStep(): Boolean = {
+    commandManager.redoStep()
+    println(consoleView.displayGameBoard(_gameState))
+    true
   }
 
   def gameOpening(player: Player): Unit = {
@@ -120,7 +156,6 @@ class GameController {
     val currentPlayer = _gameState.getCurrentPlayer()
     println(consoleView.displayPlayerCanEnterPiece(currentPlayer))
 
-    // Bewegungsmöglichkeiten anzeigen
     val validMoves = currentPlayer.getPieces().zipWithIndex.collect {
       case (piece, index) if ruleController.validateMove(piece, _gameState) =>
         println(consoleView.displayValideMove(piece))
@@ -128,7 +163,7 @@ class GameController {
     }
 
     if (validMoves.isEmpty) {
-      println("Fehler")
+      println(consoleView.displaNoValidMoves())
       return
     }
 
@@ -137,12 +172,10 @@ class GameController {
 
     val selectedPiece = currentPlayer.getPieces()(input - 1)
 
-    // Strategie zum Bewegen der Figur anwenden
-    ruleController.executeMove(selectedPiece, _gameState)
+    // MoveCommand erstellen und ausführen
+    val moveCommand = new MovePieceCommand(gameBoardController, _gameState, selectedPiece, _gameState.dice.getLastRoll())
+    commandManager.doStep(moveCommand)
 
     println(consoleView.displayGameBoard(_gameState))
   }
 }
-
-
-
