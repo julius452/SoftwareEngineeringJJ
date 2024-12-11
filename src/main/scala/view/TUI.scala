@@ -10,6 +10,8 @@ class TUI(controller: ControllerInterface) extends Observer {
 
   def processInput(input: String): Unit = {
     input match {
+      case "u" => controller.undo()
+      case "r" => controller.redo()
       case _ => controller.eval(input)
     }
   }

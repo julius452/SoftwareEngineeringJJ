@@ -8,7 +8,7 @@ case class ExecutePlayerTurnPhase(controller: MainController) extends GamePhase 
 
     if (number.isEmpty) return // invalid input
 
-    controller.gameState.movePiece(number.get)
+    controller.doStep(number.get)
 
     if (controller.gameState.gameDice.getLastRoll() != 6) {
       controller.gameState.nextTurn()

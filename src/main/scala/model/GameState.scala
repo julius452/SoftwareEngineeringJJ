@@ -141,15 +141,4 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
     sb.append(ConsoleView.displayWhichPieceToMove())
     sb.toString()
   }
-
-  def movePiece(input: Int): Unit = {
-    val gameBoardController = new GameBoardController()
-    val commandManager = new CommandManager()
-
-    val selectedPiece = currentPlayer.getPieces()(input - 1)
-
-    // MoveCommand erstellen und ausführen
-    val moveCommand = new MovePieceCommand(gameBoardController, this, selectedPiece, this.dice.getLastRoll())
-    commandManager.doStep(moveCommand)
-  }
 }
