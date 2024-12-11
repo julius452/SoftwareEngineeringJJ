@@ -12,9 +12,9 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val playersList = List(player1, player2)
       val dice = new Dice()
       val gameBoard = new GameBoard()
-      val gameState = GameState(playersList, dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
-      gameState.players shouldBe playersList
+      gameState.getterPlayersList() shouldBe playersList
       gameState.dice shouldBe dice
       gameState.board shouldBe gameBoard
     }
@@ -25,7 +25,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val playersList = List(player1, player2)
       val dice = new Dice()
       val gameBoard = new GameBoard()
-      val gameState = GameState(playersList, dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       gameState.getCurrentPlayer() shouldBe player1
     }
@@ -36,7 +36,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val playersList = List(player1, player2)
       val dice = new Dice()
       val gameBoard = new GameBoard()
-      val gameState = GameState(playersList, dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       gameState.updateCurrentPlayer(player2)
       gameState.getCurrentPlayer() shouldBe player2
@@ -48,7 +48,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val playersList = List(player1, player2)
       val dice = new Dice()
       val gameBoard = new GameBoard()
-      val gameState = GameState(playersList, dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       gameState.updateRunningState(false)
       gameState.getRunningState() shouldBe false
@@ -63,7 +63,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val playersList = List(player1, player2)
       val dice = new Dice()
       val gameBoard = new GameBoard()
-      val gameState = GameState(playersList, dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       gameState.nextTurn()
       gameState.getCurrentPlayer() shouldBe player2
@@ -77,7 +77,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val playersList = List(player1)
       val dice = new Dice()
       val gameBoard = new GameBoard()
-      val gameState = GameState(playersList, dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       gameState.nextTurn()
       gameState.getCurrentPlayer() shouldBe player1 // Still the same player

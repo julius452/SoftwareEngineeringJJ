@@ -9,7 +9,6 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
 
   val ruleController = new RuleController()
   val gameBoardController = new GameBoardController()
-  val gameStateController = new GameStateController()
 
   // Spieler-Setup
   val startField = Field()
@@ -26,7 +25,7 @@ class RuleControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
   gameBoard.initializeGameBoard()
 
   val dice = Dice()
-  val gameState = GameState(List(player1, player2), dice, gameBoard)
+  val gameState = GameState(dice, gameBoard)
 
   // Spielfigur Setup
   val piece1 = Piece(player1, 1)

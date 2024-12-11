@@ -20,8 +20,6 @@ case class Player(playerId: Int, nameString: String){
 
   private var startPosition: Int = (playerId - 1) * 10
 
-
-
   def setPlayerName(playerName: String): Unit = {
     this.name = playerName
   }
@@ -75,5 +73,14 @@ case class Player(playerId: Int, nameString: String){
   // Zustand wiederherstellen
   def restore(memento: PlayerMemento): Unit = {
     name = memento.getName()
+  }
+}
+
+object Player {
+  def checkNumberOfPlayers(number: Int): Boolean = {
+    if (number < 2 || number > 5) {
+      return false
+    }
+    true
   }
 }

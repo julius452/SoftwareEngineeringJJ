@@ -25,7 +25,7 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       board.initializeGameBoard()
 
       val dice = Dice()
-      val gameState = GameState(List(player), dice, board)
+      val gameState = GameState(dice, board)
 
       controller.movePiece(gameState, piece, 5)
       piece.getTraveledFields() shouldBe 5
@@ -48,7 +48,7 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       board.initializeGameBoard()
 
       val dice = Dice()
-      val gameState = GameState(List(player), dice, board)
+      val gameState = GameState(dice, board)
 
       controller.movePiece(gameState, piece, 6)
       piece.getTraveledFields() shouldBe 0
@@ -74,7 +74,7 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       gameBoard.getFields()(38) = field
 
       val dice = Dice()
-      val gameState = GameState(List(player), dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       controller.movePiece(gameState, piece, 3)
 
@@ -116,7 +116,7 @@ class GameBoardControllerSpec extends AnyWordSpec with Matchers {
       gameBoard.getFields()(5) = field2
 
       val dice = Dice()
-      val gameState = GameState(List(player1, player2), dice, gameBoard)
+      val gameState = GameState(dice, gameBoard)
 
       controller.throwPlayerOut(player1, piece1, field2, gameState)
 

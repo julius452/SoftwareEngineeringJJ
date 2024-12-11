@@ -1,24 +1,22 @@
 package util
 
-import model.GameState
-
 trait Observer {
-  def update(gameState: GameState): Unit
+  def update(): Unit
 }
 
 class Observable {
-  private var observers: List[Observer] = List()
+  private var observers: Vector[Observer] = Vector()
 
-  def addObserver(observer: Observer): Unit = {
-    observers = observer :: observers
+  def add(observer: Observer): Unit = {
+    observers = observer +: observers
   }
 
-  def removeObserver(observer: Observer): Unit = {
-    observers = observers.filterNot(_ == observer)
+  def remove(observer: Observer): Unit = {
+    observers = observers.filterNot(o => o == observer)
   }
 
-  def notifyObservers(gameState: GameState): Unit = {
-    observers.foreach(_.update(gameState))
+  def notifyObservers(): Unit = {
+    observers.foreach(o => o.update())
   }
 }
 

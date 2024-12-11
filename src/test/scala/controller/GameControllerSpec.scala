@@ -9,8 +9,6 @@ class GameControllerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
   val playerController = new PlayerController()
   val gameBoardController = new GameBoardController()
   val ruleController = new RuleController()
-  val gameController = new GameController()
-  val gameStateController = new GameStateController()
 
   "A GameController" should {
 

@@ -1,8 +1,11 @@
 package state
 
-import controller.GameController
-import model.GameState
+import controller.MainController
 
 trait GamePhase {
-  def executePhase(gameController: GameController, gameState: GameState): Unit
+  def evaluate(input: String): Unit
+
+  def getCurrentStateAsString: String
+
+  def nextState: GamePhase
 }

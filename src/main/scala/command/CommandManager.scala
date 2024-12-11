@@ -6,7 +6,6 @@ import view.ConsoleView
 class CommandManager {
   private var undoStack: List[Command] = Nil
   private var redoStack: List[Command] = Nil
-  private var consoleView = new ConsoleView()
 
   def doStep(command: Command): Try[Unit] = {
     Try {
@@ -17,7 +16,7 @@ class CommandManager {
         redoStack = Nil // Redo-Stack leeren
         Success(())
       case Failure(exception) =>
-        println(consoleView.displayError())
+        println(ConsoleView.displayError())
         Failure(exception)
     }
   }
@@ -25,7 +24,7 @@ class CommandManager {
   def undoStep(): Try[Unit] = {
     undoStack match {
       case Nil =>
-        println(consoleView.displayErrorUndo())
+        println(ConsoleView.displayErrorUndo())
         Success(())
       case head :: stack =>
         Try {
@@ -36,7 +35,7 @@ class CommandManager {
             redoStack = head :: redoStack
             Success(())
           case Failure(exception) =>
-            println(consoleView.displayError())
+            println(ConsoleView.displayError())
             Failure(exception)
         }
     }
@@ -45,7 +44,7 @@ class CommandManager {
   def redoStep(): Try[Unit] = {
     redoStack match {
       case Nil =>
-        println(consoleView.displayErrorRedo())
+        println(ConsoleView.displayErrorRedo())
         Success(())
       case head :: stack =>
         Try {
@@ -56,7 +55,7 @@ class CommandManager {
             undoStack = head :: undoStack
             Success(())
           case Failure(exception) =>
-            println(consoleView.displayError())
+            println(ConsoleView.displayError())
             Failure(exception)
         }
     }

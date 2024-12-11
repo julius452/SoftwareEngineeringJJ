@@ -1,17 +1,16 @@
 package view
 
-import controller.Controller
-import util.Observable
+import controller.ControllerInterface
+import util.Observer
 
-class TUI(controller: Controller) extends Observable {
-  def update(): Unit = {
-    print(controller.gameStateToString())
-  }
+class TUI(controller: ControllerInterface) extends Observer {
+  controller.add(this)
+
+  override def update(): Unit = println(controller.getCurrentStateAsString)
 
   def processInput(input: String): Unit = {
     input match {
-      case "w" =>
-      case _ => controller.processInput(input)
+      case _ => controller.eval(input)
     }
   }
 }

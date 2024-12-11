@@ -2,15 +2,11 @@ package builder
 
 import model.{Dice, GameBoard, GameState, Player}
 
-class GameStateBuilder extends BobTheBuilder {
-  private var playersList: List[Player] = List.empty
-  private var gameDice: Dice = _
-  private var gameBoard: GameBoard = _
+import scala.compiletime.uninitialized
 
-  def buildPlayers(players: List[Player]): GameStateBuilder = {
-    this.playersList = players
-    this
-  }
+class GameStateBuilder extends BobTheBuilder {
+  private var gameDice: Dice = uninitialized
+  private var gameBoard: GameBoard = uninitialized
 
   def buildDice(): GameStateBuilder = {
     this.gameDice = Dice()
@@ -25,6 +21,6 @@ class GameStateBuilder extends BobTheBuilder {
 
   // Baut das GameState-Objekt
   def build(): GameState = {
-    GameState(playersList, gameDice, gameBoard)
+    GameState(gameDice, gameBoard)
   }
 }

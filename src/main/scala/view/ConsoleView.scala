@@ -3,41 +3,66 @@ package view
 import model.{GameBoard, GameState, Piece, Player}
 import util.Observer
 
-class ConsoleView extends Observer{
+object ConsoleView{
+  def displayStartPhase(): String = {
+    var sb = new StringBuilder()
+    sb.append("Willkommen bei Mensch Ärgere Dich Nicht!\n")
+    sb.append("Bitte geben Sie die Anzahl der Spieler ein (2-4):")
 
-  def update(gameState: GameState): Unit = {
-    println(displayGameBoard(gameState)) // Zeigt das aktuelle Spielfeld an
-  }
-  def displayAskForPlayersCount(): String = {
-    return "Wie viele spielen mit? (2-4):"
-  }
-
-  def displayAskForPlayerName(i: Int): String = {
-    return s"Name des Spielers $i:"
+    sb.toString()
   }
 
-  def displayPlayerInfos(player: Player): String = {
+  def displayPlayerSetupPhase(index: Int): String = {
     val sb = new StringBuilder()
-    sb.append("NAme: " + player.getPlayerName())
-    sb.append("\nPlayerId: " + player.getPlayerId())
-    sb.append("\nNumber: " + player.getPlayerNumber())
-    sb.append("\nPieces: " + player.getPieces().length) // Print count
-    for (i <- player.getPieces().indices) {
-      val piece = player.getPieces()(i)
-      sb.append(s"\n  Piece $i: isOnField = ${piece.getIsOnField()}, currentField = ${piece.getField().getPosition()}")
+    sb.append(s"Name des Spielers $index:")
+
+    sb.toString()
+  }
+
+  def displayDetermineStartPlayerPhase(currentPlayer: Player): String = {
+    val sb = new StringBuilder()
+    sb.append(displayDivider())
+    sb.append("Der Startspieler wird ermittelt.\n")
+    sb.append(displayPleaseRoll(currentPlayer))
+    sb.toString()
+  }
+
+  def displayPleaseRoll(currentPlayer: Player): String = {
+    s"${currentPlayer.getPlayerName()}, bitte würfeln (w):"
+  }
+
+  def displayDiceRoll(roll: Int, name: String): String = {
+    if (roll == 6) {
+      return s"Yeah!, $name hat eine 6 gewürfelt"
     }
 
-    sb.append("\nHouse: " + player.getHouse().length) // Print count
-    for (i <- player.getHouse().indices) {
-      val field = player.getHouse()(i)
-      sb.append(s"\n  House $i: isOccupied = ${field.getIsOccupied()}, Value = ${field.getValue()}")
+    s"$name hat eine $roll gewürfelt.\n"
+  }
+
+  def displayInGamePhaseString(gameState: GameState): String = {
+    val sb = new StringBuilder()
+
+    if (gameState.getTriesToGetOutOfStartHouse == 0) {
+      sb.append(displayDivider())
+
+      sb.append(s"${gameState.getCurrentPlayer().getPlayerName()} ist am Zug.\n")
+
+      sb.append(getGameBoardAsString(gameState))
+
+      sb.append(getPlayerHouseAsString(gameState))
+
+      sb.append(getPlayerStartHouseAsString(gameState))
+
+      sb.append('\n')
+    } else {
+      sb.append("-------------------------\n")
+      sb.append("Nochmal versuchen!\n")
+      sb.append(s"${gameState.getCurrentPlayer().getPlayerName()} ist am Zug.\n")
     }
 
-    sb.append("\nStartHouse: " + player.getStartHouse().length) // Print count
-    for (i <- player.getStartHouse().indices) {
-      val field = player.getStartHouse()(i)
-      sb.append(s"\n  StartHouse $i: isOccupied = ${field.getIsOccupied()}, Value = ${field.getValue()}")
-    }
+    sb.append('\n')
+
+    sb.append(displayPleaseRoll(gameState.getCurrentPlayer()))
 
     sb.toString()
   }
@@ -65,36 +90,12 @@ class ConsoleView extends Observer{
     return s"Neuer Name für Spieler $playerNumber:"
   }
 
-  def displayDetermineStartingPlayer(): String = {
-    return "Um den Startspieler zu bestimmen, müssen alle Spieler einmal würfeln:"
-  }
-
-  def displayAskPlayerToRoll(player: Player): String = {
-    return s"${player.getPlayerName()}, bitte würfeln (w):"
-  }
-
-  def displayDiceRollResult(player: Player, roll: Int): String = {
-    return s"${player.getPlayerName()} hat eine $roll gewürfelt.\n"
-  }
-
-  def displayStartPlayer(player: Player): String = {
-    return s"${player.getPlayerName()} beginnt!\n"
-  }
-
-  def displayTurnInfo(player: Player): String = {
-    return s"${player.getPlayerName()} ist am Zug."
-  }
-
-  def displayWrongInput(): String = {
-    return "\nFalsche Eingabe!! Nochmal versuchen:\n"
-  }
-
   def displayPlayerWon(player: Player): String = {
     return s"\nGlückwunsch ${player.getPlayerName()} Du hat gewonnen!"
   }
 
-  def displayPlayerCanEnterPiece(player: Player): String = {
-    return s"Mögliche Züge:"
+  def displayPlayerCanEnterPiece(): String = {
+    return s"\nDeine Möglichen Züge:\n"
   }
 
   def displayWhichPieceToMove(): String = {
@@ -105,14 +106,14 @@ class ConsoleView extends Observer{
     val sb = new StringBuilder()
 
     if (piece.getIsOnField()) {
-      return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) auf Feld ${piece.getField().getPosition()} kann ziehen."
+      return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) auf Feld ${piece.getField().getPosition()} kann ziehen.\n"
     }
 
     if (piece.getIsInHome()) {
-      return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) kann im Haus ziehen."
+      return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) kann im Haus ziehen.\n"
     }
 
-    return s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) kann auf das Spielfeld gesetzt werden."
+    s"\tFigur ${piece.player.getPlayerId() + piece.id} (${piece.id}) kann auf das Spielfeld gesetzt werden.\n"
   }
 
   def displayGameBoard(gameState: GameState): String = {
@@ -199,10 +200,6 @@ class ConsoleView extends Observer{
     sb.append(startHouseString)
 
     return sb.toString()
-  }
-
-  def displayPlayerCanRollAgain(player: Player): String = {
-    return s"${player.getPlayerName()} hat eine 6 gewürfelt und darf nochmal würfeln.\n"
   }
 
   def displayDivider(): String = {
