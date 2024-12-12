@@ -1,121 +1,154 @@
-import org.scalatest.wordspec.AnyWordSpec
+package view
+
+import builder.GameStateBuilder
+import model.{Field, FieldType, GameBoard, GameState, Piece, Player}
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.{GameState, GameBoard, Piece, Player}
-import view.ConsoleView
 
-class ConsoleViewSpec extends AnyWordSpec with Matchers {
+class ConsoleViewSpec extends AnyFlatSpec with Matchers {
 
-  "ConsoleView" should {
+  "ConsoleView" should "display start phase correctly" in {
+    val expected = "Willkommen bei Mensch Ärgere Dich Nicht!\nBitte geben Sie die Anzahl der Spieler ein (2-4):"
+    ConsoleView.displayStartPhase() should be(expected)
+  }
 
-    "display correct prompt for number of players" in {
-      ConsoleView.displayAskForPlayersCount() shouldBe "Wie viele spielen mit? (2-4):"
-    }
+  it should "display player setup phase correctly" in {
+    val index = 1
+    val expected = s"Name des Spielers $index:"
+    ConsoleView.displayPlayerSetupPhase(index) should be(expected)
+  }
 
-    "display correct prompt for player name" in {
-      ConsoleView.displayAskForPlayerName(1) shouldBe "Name des Spielers 1:"
-    }
+  it should "display determine start player phase correctly" in {
+    val player = new Player(1, "Alice")
+    player.initializeHousesAndPieces()
 
-    "display prompt to determine starting player" in {
-      ConsoleView.displayDetermineStartingPlayer() shouldBe "Um den Startspieler zu bestimmen, müssen alle Spieler einmal würfeln:"
-    }
+    val expected = s"${ConsoleView.displayDivider()}Der Startspieler wird ermittelt.\n${ConsoleView.displayPleaseRoll(player)}"
+    ConsoleView.displayDetermineStartPlayerPhase(player) should be(expected)
+  }
 
-    "prompt player to roll dice" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayAskPlayerToRoll(player) shouldBe "Player1, bitte würfeln (w):"
-    }
+  it should "display dice roll correctly" in {
+    val name = "Player1"
+    ConsoleView.displayDiceRoll(6, name) should be(s"Yeah!, $name hat eine 6 gewürfelt")
+    ConsoleView.displayDiceRoll(3, name) should be(s"$name hat eine 3 gewürfelt.\n")
+  }
 
-    "display dice roll result" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayDiceRollResult(player, 5) shouldBe "Player1 hat eine 5 gewürfelt.\n"
-    }
+  it should "display in-game phase string correctly" in {
+    val gameState = new GameStateBuilder()
+      .buildDice()
+      .buildGameBoard()
+      .build()
 
-    "display the starting player" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayStartPlayer(player) shouldBe "Player1 beginnt!"
-    }
+    val player = Player(1, "Player1")
+    player.initializeHousesAndPieces()
 
-    "display the turn information" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayTurnInfo(player) shouldBe "Player1 ist am Zug."
-    }
+    gameState.setPlayersCount(1)
+    gameState.addPlayer("Player1")
+    gameState.updateCurrentPlayer(player)
 
-    "display wrong input prompt" in {
-      ConsoleView.displayWrongInput() shouldBe "\nFalsche Eingabe!! Nochmal versuchen:\n"
-    }
+    val expected = s"${ConsoleView.displayDivider()}Player1 ist am Zug.\n${ConsoleView.getGameBoardAsString(gameState)}${ConsoleView.getPlayerHouseAsString(gameState)}${ConsoleView.getPlayerStartHouseAsString(gameState)}\n\nPlayer1, bitte würfeln (w):"
+    ConsoleView.displayInGamePhaseString(gameState) should be(expected)
+  }
 
-    "display player won message" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayPlayerWon(player) shouldBe "\nGlückwunsch Player1 Du hat gewonnen!"
-    }
+  it should "display happy with players correctly" in {
+    ConsoleView.displayHappyWithPlayers() should be("Sind Sie mit den Spielernamen zufrieden? (j/n):")
+  }
 
-    "display player can enter a piece" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayPlayerCanEnterPiece(player) shouldBe "\nMögliche Züge:"
-    }
+  it should "display players correctly" in {
+    val player1 = new Player(1, "Player1")
+    player1.initializeHousesAndPieces()
 
-    "prompt for which piece to move" in {
-      ConsoleView.displayWhichPieceToMove() shouldBe "Welche Figur soll ziehen?:"
-    }
+    val player2 = new Player(2, "Player2")
+    player2.initializeHousesAndPieces()
 
-    "display valid move for a piece on the field" in {
-      val player = Player(1, "Player1")
-      val piece = Piece(player, 1)
-      piece.setIsOnField(true)
-      piece.setField(new model.Field())
-      ConsoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) auf Feld 0 kann ziehen."
-    }
+    val players = List(player1, player2)
+    val expected = "\nSpieler:\n\tSpieler 1: Player1\n\tSpieler 2: Player2\n"
+    ConsoleView.displayPlayers(players) should be(expected)
+  }
 
-    "display valid move for a piece in home" in {
-      val player = Player(1, "Player1")
-      val piece = Piece(player, 1)
-      piece.setIsInHome(true)
-      piece.setField(new model.Field())
-      ConsoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) kann im Haus ziehen."
-    }
+  it should "display change player correctly" in {
+    ConsoleView.displayChangePlayer() should be("Welchen Spieler möchten Sie ändern?:")
+  }
 
-    "display valid move for a piece in start house" in {
-      val player = Player(1, "Player1")
-      val piece = Piece(player, 1)
-      piece.setIsOnField(false)
-      piece.setIsInHome(false)
-      piece.setField(new model.Field())
-      ConsoleView.displayValideMove(piece) shouldBe "\tFigur A1 (1) kann auf das Spielfeld gesetzt werden."
-    }
+  it should "display ask for new player name correctly" in {
+    val playerNumber = 1
+    ConsoleView.displayAskForNewPlayerName(playerNumber) should be(s"Neuer Name für Spieler $playerNumber:")
+  }
 
-    "display the game board correctly" in {
-      val player = Player(1, "Player1")
-      player.initializeHousesAndPieces()
-      val board = GameBoard()
-      board.initializeGameBoard()
-      val gameState = new GameState(null, board)
-      ConsoleView.displayGameBoard(gameState).contains("Spielfeld:") shouldBe true
-    }
+  it should "display player won correctly" in {
+    val player = new Player(1, "Player1")
+    player.initializeHousesAndPieces()
 
-    "display the player's house correctly" in {
-      val player = Player(1, "Player1")
-      player.initializeHousesAndPieces()
-      val board = new GameBoard()
-      board.initializeGameBoard()
-      val gameState = new GameState(null, board)
-      ConsoleView.getPlayerHouseAsString(gameState).contains("Haus:") shouldBe true
-    }
+    ConsoleView.displayPlayerWon(player) should be(s"\nGlückwunsch ${player.getPlayerName()} Du hat gewonnen!")
+  }
 
-    "display the player's start house correctly" in {
-      val player = Player(1, "Player1")
-      player.initializeHousesAndPieces()
-      val board = new GameBoard()
-      board.initializeGameBoard()
-      val gameState = new GameState(null, board)
-      ConsoleView.getPlayerStartHouseAsString(gameState).contains("Starthäuschen:") shouldBe true
-    }
+  it should "display player can enter piece correctly" in {
+    ConsoleView.displayPlayerCanEnterPiece() should be("\nDeine Möglichen Züge:\n")
+  }
 
-    "display player can roll again if they rolled a 6" in {
-      val player = Player(1, "Player1")
-      ConsoleView.displayPlayerCanRollAgain(player) shouldBe "\nPlayer1 hat eine 6 gewürfelt und darf nochmal würfeln."
-    }
+  it should "display which piece to move correctly" in {
+    ConsoleView.displayWhichPieceToMove() should be("Welche Figur soll ziehen?:")
+  }
 
-    "display a divider" in {
-      ConsoleView.displayDivider() shouldBe "\n" + ("-" * 70) + "\n"
-    }
+  it should "display valid move correctly" in {
+    val player = new Player(1, "Player1")
+    player.initializeHousesAndPieces()
+
+    val piece = new Piece(player, 1)
+    piece.setIsOnField(true)
+
+    val field = Field()
+    field.inInitializeField(10, FieldType.GAME)
+
+    piece.setField(field)
+    ConsoleView.displayValideMove(piece) should be(s"\tFigur ${player.getPlayerId() + piece.id} (${piece.id}) auf Feld ${piece.getField().getPosition()} kann ziehen.\n")
+  }
+
+  it should "display game board correctly" in {
+    val gameState = new GameStateBuilder()
+      .buildDice()
+      .buildGameBoard()
+      .build()
+
+    val player = Player(1, "Alice")
+    player.initializeHousesAndPieces()
+
+    gameState.setPlayersCount(1)
+    gameState.addPlayer("Alice")
+    gameState.updateCurrentPlayer(player)
+
+    val expected = s"${ConsoleView.getGameBoardAsString(gameState)}${ConsoleView.getPlayerHouseAsString(gameState)}${ConsoleView.getPlayerStartHouseAsString(gameState)}\n"
+    ConsoleView.displayGameBoard(gameState) should be(expected)
+  }
+
+  it should "display divider correctly" in {
+    ConsoleView.displayDivider() should be("-" * 70 + "\n")
+  }
+
+  it should "display no valid moves correctly" in {
+    ConsoleView.displaNoValidMoves() should be("Keine gültigen Züge für den Spieler.")
+  }
+
+  it should "display next move correctly" in {
+    ConsoleView.displayNextMove() should be("Der nächste Zug wird ausgeführt.")
+  }
+
+  it should "display undo option correctly" in {
+    ConsoleView.displayUndoOption() should be("Möchten Sie den Zug rückgängig machen? Drücken Sie (u) für Ja, oder eine andere Taste für Nein.")
+  }
+
+  it should "display redo option correctly" in {
+    ConsoleView.displayRedoOption() should be("Möchten Sie den letzten Zug wiederherstellen? Drücken Sie (r) für Ja, oder eine andere Taste für Nein.")
+  }
+
+  it should "display error undo correctly" in {
+    ConsoleView.displayErrorUndo() should be("Kein Zug zum Rückgängig machen.")
+  }
+
+  it should "display error redo correctly" in {
+    ConsoleView.displayErrorRedo() should be("Kein Zug zum Wiederholen.")
+  }
+
+  it should "display error correctly" in {
+    ConsoleView.displayError() should be("Fehler beim Wiederholen des Befehls: ${exception.getMessage}")
   }
 }

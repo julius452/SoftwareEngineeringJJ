@@ -22,4 +22,7 @@ class Caretaker {
       println(s"Kein vorheriger Name für Spieler ${player.getPlayerNumber()} vorhanden!")
     }
   }
+
+  def getMementos: mutable.Map[Int, mutable.Stack[PlayerMemento]] = mementos
+
 }

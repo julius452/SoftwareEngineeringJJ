@@ -2,10 +2,11 @@ package util
 
 trait Observer {
   def update(): Unit
+  def isUpdated: Boolean
 }
 
 class Observable {
-  private var observers: Vector[Observer] = Vector()
+  var observers: Vector[Observer] = Vector()
 
   def add(observer: Observer): Unit = {
     observers = observer +: observers

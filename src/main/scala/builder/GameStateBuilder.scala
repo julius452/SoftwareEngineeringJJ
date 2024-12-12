@@ -5,8 +5,8 @@ import model.{Dice, GameBoard, GameState, Player}
 import scala.compiletime.uninitialized
 
 class GameStateBuilder extends BobTheBuilder {
-  private var gameDice: Dice = uninitialized
-  private var gameBoard: GameBoard = uninitialized
+  private var gameDice: Dice = null
+  private var gameBoard: GameBoard = null
 
   def buildDice(): GameStateBuilder = {
     this.gameDice = Dice()

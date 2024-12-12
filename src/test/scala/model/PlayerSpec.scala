@@ -65,5 +65,16 @@ class PlayerSpec extends AnyWordSpec with Matchers {
 
       player.getHouse() shouldBe newHouse
     }
+
+    "return true for 2 to 4 players" in {
+      Player.checkNumberOfPlayers(2) should be(true)
+      Player.checkNumberOfPlayers(3) should be(true)
+      Player.checkNumberOfPlayers(4) should be(true)
+    }
+
+    "return false for less than 2 or more than 4 players" in {
+      Player.checkNumberOfPlayers(1) should be(false)
+      Player.checkNumberOfPlayers(5) should be(false)
+    }
   }
 }

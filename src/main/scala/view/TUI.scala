@@ -15,4 +15,6 @@ class TUI(controller: ControllerInterface) extends Observer {
       case _ => controller.eval(input)
     }
   }
+
+  override def isUpdated: Boolean = false
 }

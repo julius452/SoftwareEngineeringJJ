@@ -1,6 +1,6 @@
 package controller
 
-import model.{Field, GameBoard, GameState, Piece, Player}
+import model.{Field, GameState, Piece, Player}
 
 class GameBoardController {
   def movePiece(gameState: GameState, piece: Piece, steps: Int): Unit = {

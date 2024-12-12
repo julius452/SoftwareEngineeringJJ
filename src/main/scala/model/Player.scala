@@ -78,7 +78,7 @@ case class Player(playerId: Int, nameString: String){
 
 object Player {
   def checkNumberOfPlayers(number: Int): Boolean = {
-    if (number < 2 || number > 5) {
+    if (number < 2 || number > 4) {
       return false
     }
     true

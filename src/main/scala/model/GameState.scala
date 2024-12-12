@@ -44,6 +44,7 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   private var createdPlayers: Int = 0
   private var triesToGetOutOfStartHouse: Int = 0
 
+  def getStartingPlayerTracker: List[(Player, Int)] = startingPlayerTracker
   def getTriesToGetOutOfStartHouse: Int = triesToGetOutOfStartHouse
   def incrementTriesToGetOutOfStartHouse(): Unit = {
     triesToGetOutOfStartHouse += 1

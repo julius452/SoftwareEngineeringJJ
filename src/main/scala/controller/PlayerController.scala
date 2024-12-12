@@ -7,7 +7,7 @@ import view.ConsoleView
 import scala.util.Try
 
 class PlayerController() {
-  def happyWithPlayers(players: List[Player], caretaker: Caretaker): Unit = {
+  /* def happyWithPlayers(players: List[Player], caretaker: Caretaker): Unit = {
     var isHappy = false
 
     while (!isHappy) {
@@ -36,6 +36,6 @@ class PlayerController() {
       caretaker.save(player)
       player.setPlayerName(newPlayerName)
     }
-  }
+  } */
 }
 

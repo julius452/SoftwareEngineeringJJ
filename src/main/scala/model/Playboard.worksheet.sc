@@ -1,3 +1,11 @@
+// Beispielcommands für Versionierung:
+// git tag v0.0.2
+// git push origin v0.0.2
+
+//Beispiel commands für clean coverage:
+// sbt clean coverage test (coverageReport)
+// sbt coverageReport
+
 // Das Spielfeld mit 40 Feldern initialisieren
 val spielfeld: Array[String] = Array.fill(40)("00")
 
