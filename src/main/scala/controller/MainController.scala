@@ -53,6 +53,8 @@ class MainController(var gameState: GameState) extends ControllerInterface {
   override def getLastRoll: Int = gameState.gameDice.getLastRoll()
   override def getRollCounter: Int = gameState.getRollCounter()
   override def getPlayerCount: Int = gameState.getPlayerCount
+
+  override def getValidMoves: List[(Int, String)] = gameState.getValidMoves()
 }
 
 object MainController{

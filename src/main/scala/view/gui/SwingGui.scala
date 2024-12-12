@@ -8,7 +8,7 @@ import scala.swing._
 class SwingGui(controller: ControllerInterface) extends Frame with Observer{
   controller.add(this)
 
-  title = "Wizard"
+  title = "Mensch ärgere dich nicht"
 
   contents = new WelcomePanel(controller)
 

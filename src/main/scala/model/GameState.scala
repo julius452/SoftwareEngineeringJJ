@@ -174,6 +174,19 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
     sb.toString()
   }
 
+  def getValidMoves(): List[(Int,String)] = {
+    val ruleController = new RuleController()
+
+    // Überprüfe die Züge aller Spielfiguren des aktuellen Spielers
+    currentPlayer.getPieces().zipWithIndex.collect {
+      case (piece, index) if ruleController.validateMove(piece, this) =>
+        (index, s"Figur ${index + 1} kann sich bewegen.")
+    }.toList
+  }
+
+
+
+
   def getExecutePlayerTurnPhaseString: String = {
     val ruleController = new RuleController()
     val sb = new StringBuilder()

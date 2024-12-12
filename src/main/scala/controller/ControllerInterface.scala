@@ -14,4 +14,5 @@ trait ControllerInterface extends Observable{
   def getLastRoll: Int
   def getRollCounter: Int
   def getPlayerCount: Int
+  def getValidMoves: List[(Int,String)]
 }

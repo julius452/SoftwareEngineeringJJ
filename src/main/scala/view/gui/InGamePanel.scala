@@ -1,12 +1,14 @@
 package view.gui
 
 import controller.ControllerInterface
+import sun.tools.jconsole.LabeledComponent.layout
 
 import scala.swing._
 import java.awt.{Color, Dimension, Graphics}
-import javax.swing.BorderFactory
+import javax.swing.{BorderFactory, JOptionPane}
+import scala.swing.event.ButtonClicked
 
-class InGamePanel(controller: ControllerInterface) extends BoxPanel(Orientation.Vertical) {
+class InGamePanel(controller: ControllerInterface) extends BorderPanel {
 
   // Left half: Game board panel
   val gameBoardPanel = new Panel {
@@ -40,10 +42,10 @@ class InGamePanel(controller: ControllerInterface) extends BoxPanel(Orientation.
     }
   }
 
-  def drawColor(row: Int, col:Int): Color = {
+  def drawColor(row: Int, col: Int): Color = {
     // Home areas for each player (Red, Green, Blue, Yellow)
     if ((row >= 0 && row <= 1) && (col >= 0 && col <= 1)) {
-      Color.YELLOW  // top left
+      Color.YELLOW // top left
     } else if ((row >= 0 && row <= 1) && (col >= 9 && col <= 10)) {
       Color.RED // top right
     } else if ((row >= 9 && row <= 10) && (col >= 9 && col <= 10)) {
@@ -54,7 +56,7 @@ class InGamePanel(controller: ControllerInterface) extends BoxPanel(Orientation.
     // Set Start points
     else if (row == 4 && col == 0) {
       Color.YELLOW
-    } else if (row == 0 && col == 6){
+    } else if (row == 0 && col == 6) {
       Color.RED
     } else if (row == 6 && col == 10) {
       Color.BLUE
@@ -62,7 +64,7 @@ class InGamePanel(controller: ControllerInterface) extends BoxPanel(Orientation.
       Color.GREEN
     }
     // set home spaces
-    else if(row == 5 && col >= 1 && col <= 4) {
+    else if (row == 5 && col >= 1 && col <= 4) {
       Color.YELLOW
     } else if (row >= 1 && row <= 4 && col == 5) {
       Color.RED
@@ -86,7 +88,7 @@ class InGamePanel(controller: ControllerInterface) extends BoxPanel(Orientation.
       || (row == 5 && col == 0)) {
       Color.WHITE
     } else {
-        Color.LIGHT_GRAY // Rest of the spaces
+      Color.LIGHT_GRAY // Rest of the spaces
     }
   }
 
@@ -136,25 +138,51 @@ class InGamePanel(controller: ControllerInterface) extends BoxPanel(Orientation.
     g.fillOval(x, y, playerSize, playerSize)
   }
 
+  // Würfel Button
+  val rollButton = new Button("Würfeln")
+
+
   // Right half: Split into top and bottom panels
   val rightPanelTop = new BoxPanel(Orientation.Vertical) {
+    contents += rollButton
     background = Color.WHITE
-    border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Player Info")
-  }
+    border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Rolling Dice")
 
-  val rightPanelBottom = new BoxPanel(Orientation.Vertical) {
-    background = Color.GRAY
-    border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Game Controls")
-  }
+    listenTo(rollButton)
+    reactions += {
+      case ButtonClicked(`rollButton`) => {
+        val currentPlayer = controller.getCurrentPlayerName
+        controller.eval("w")
+        val sb = new StringBuilder()
 
-  val rightPanel = new BoxPanel(Orientation.Vertical) {
-    contents += rightPanelTop
-    contents += Swing.VStrut(10)
-    contents += rightPanelBottom
-  }
+        sb.append(s"$currentPlayer hat eine ${controller.getLastRoll} gewürfelt!\n")
 
-  // Layout setup
-  contents += new SplitPane(Orientation.Horizontal, Component.wrap(gameBoardPanel.peer), Component.wrap(rightPanel.peer)) {
-    dividerLocation = 400
+
+        JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
+      }}
+    }
+
+    val rightPanelBottom = new BoxPanel(Orientation.Vertical) {
+      val validMoves = controller.getValidMoves
+      contents += new Label(controller.getCurrentPlayerName + " ist am Zug")
+      if (validMoves.isEmpty) {
+        contents += new Label("Keine gültigen Züge verfügbar.")
+      } else {
+        validMoves.foreach { move =>
+          contents += new Label(s"Zug: ${move}")
+        }
+        background = Color.WHITE
+        border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Player Info")
+      }
+    }
+
+    val rightPanel = new BoxPanel(Orientation.Vertical) {
+      contents += rightPanelTop
+      contents += Swing.VStrut(10)
+      contents += rightPanelBottom
+    }
+
+
+    layout(gameBoardPanel) = BorderPanel.Position.West
+    layout(rightPanel) = BorderPanel.Position.East
   }
-}
