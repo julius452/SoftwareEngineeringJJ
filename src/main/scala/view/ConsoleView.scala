@@ -19,11 +19,15 @@ object ConsoleView{
     sb.toString()
   }
 
-  def displayDetermineStartPlayerPhase(currentPlayer: Player): String = {
+  def displayDetermineStartPlayerPhase(gameState: GameState): String = {
     val sb = new StringBuilder()
+    if (gameState.gameDice.getLastRoll() != 0) {
+      sb.append(displayDiceRoll(gameState.gameDice.getLastRoll(), gameState.getCurrentPlayer().getPlayerName()))
+    }
+
     sb.append(displayDivider())
     sb.append("Der Startspieler wird ermittelt.\n")
-    sb.append(displayPleaseRoll(currentPlayer))
+    sb.append(displayPleaseRoll(gameState.getCurrentPlayer()))
     sb.toString()
   }
 
@@ -33,7 +37,7 @@ object ConsoleView{
 
   def displayDiceRoll(roll: Int, name: String): String = {
     if (roll == 6) {
-      return s"Yeah!, $name hat eine 6 gewürfelt"
+      return s"Yeah!, $name hat eine 6 gewürfelt\n"
     }
 
     s"$name hat eine $roll gewürfelt.\n"
@@ -41,6 +45,10 @@ object ConsoleView{
 
   def displayInGamePhaseString(gameState: GameState): String = {
     val sb = new StringBuilder()
+
+    if (gameState.gameDice.getLastRoll() != 0) {
+      sb.append(displayDiceRoll(gameState.gameDice.getLastRoll(), gameState.getCurrentPlayer().getPlayerName()))
+    }
 
     if (gameState.getTriesToGetOutOfStartHouse == 0) {
       sb.append(displayDivider())
@@ -55,9 +63,9 @@ object ConsoleView{
 
       sb.append('\n')
     } else {
-      sb.append("-------------------------\n")
-      sb.append("Nochmal versuchen!\n")
-      sb.append(s"${gameState.getCurrentPlayer().getPlayerName()} ist am Zug.\n")
+      sb.append("\nDu kannst noch nicht aus dem Haus ziehen!\n")
+      sb.append("Du hast noch " + (3 - gameState.getTriesToGetOutOfStartHouse) + " Versuch(e)\n")
+      sb.append("-------------------------")
     }
 
     sb.append('\n')

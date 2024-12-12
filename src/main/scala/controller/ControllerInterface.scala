@@ -11,4 +11,7 @@ trait ControllerInterface extends Observable{
   def controllerStateAsString: String
   def getCurrentPlayerSetUpNumber: Int
   def getCurrentPlayerName: String
+  def getLastRoll: Int
+  def getRollCounter: Int
+  def getPlayerCount: Int
 }

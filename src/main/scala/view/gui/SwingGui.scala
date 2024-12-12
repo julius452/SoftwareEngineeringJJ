@@ -34,6 +34,7 @@ object SwingGui {
       case "PlayerSetupPhase" => new PlayerSetupPanel(controller)
       case "DetermineStartPlayerPhase" => new DetermineStartPlayerPanel(controller)
       case "InGamePhase" => new InGamePanel(controller)
+      case "ExecutePlayerTurnPhase" => new ExecutePlayerTurnPanel(controller)
     }
   }
 }

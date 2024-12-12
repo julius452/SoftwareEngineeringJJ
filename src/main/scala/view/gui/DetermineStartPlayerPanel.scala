@@ -3,7 +3,7 @@ package view.gui
 import controller.ControllerInterface
 
 import java.awt.{Color, GradientPaint}
-import javax.swing.BorderFactory
+import javax.swing.{BorderFactory, JOptionPane}
 import scala.swing._
 import scala.swing.event.ButtonClicked
 
@@ -56,6 +56,18 @@ class DetermineStartPlayerPanel(controller: ControllerInterface) extends BoxPane
   // Listen for button click
   listenTo(rollButton)
   reactions += {
-    case ButtonClicked(`rollButton`) => controller.eval("w")
+    case ButtonClicked(`rollButton`) => {
+      val currentPlayer = controller.getCurrentPlayerName
+      controller.eval("w")
+      val sb = new StringBuilder()
+
+      sb.append(s"$currentPlayer hat eine ${controller.getLastRoll} gewürfelt!\n")
+
+      if (controller.getRollCounter == controller.getPlayerCount) {
+        sb.append(s"${controller.getCurrentPlayerName} hat gewonnen und darf beginnen!")
+      }
+
+      JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
+    }
   }
 }

@@ -85,7 +85,7 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   }
 
   def getDetermineStartPlayerPhaseString: String = {
-    ConsoleView.displayDetermineStartPlayerPhase(currentPlayer)
+    ConsoleView.displayDetermineStartPlayerPhase(this)
   }
 
   def setFirstPlayer(): Unit = {

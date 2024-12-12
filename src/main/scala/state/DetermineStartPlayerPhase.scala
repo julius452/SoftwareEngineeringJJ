@@ -9,8 +9,6 @@ case class DetermineStartPlayerPhase(controller: MainController) extends GamePha
 
     controller.gameState.gameDice.rollDice()
 
-    println(ConsoleView.displayDiceRoll(controller.gameState.gameDice.getLastRoll(), controller.gameState.getCurrentPlayer().getPlayerName()))
-
     controller.gameState.incrementRollCounter()
     controller.gameState.trackStartingPlayer(controller.gameState.gameDice.getLastRoll())
 
