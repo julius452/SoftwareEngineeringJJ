@@ -20,6 +20,13 @@ class TUISpec extends AnyFlatSpec with Matchers {
     override def notifyObservers(): Unit = {}
 
     override def doStep(input: Int): Unit = {}
+    override def getCurrentPlayerSetUpNumber: Int = 0
+    override def getCurrentPlayerName: String = ""
+    override def getLastRoll: Int = 0
+    override def getRollCounter: Int = 0
+    override def getPlayerCount: Int = 0
+
+    override def controllerStateAsString: String = ???
   }
 
   "A TUI" should "call controller's undo method when input is 'u'" in {

@@ -55,6 +55,8 @@ object ConsoleView{
 
       sb.append(s"${gameState.getCurrentPlayer().getPlayerName()} ist am Zug.\n")
 
+      sb.append('\n')
+
       sb.append(getGameBoardAsString(gameState))
 
       sb.append(getPlayerHouseAsString(gameState))

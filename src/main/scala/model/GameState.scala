@@ -1,8 +1,8 @@
 package model
 
-import command.{CommandManager, MovePieceCommand}
-import controller.{GameBoardController, RuleController}
+import controller.RuleController
 import view.ConsoleView
+import view.ConsoleView.displayDivider
 
 import scala.compiletime.uninitialized
 
@@ -43,7 +43,13 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   private var startingPlayerTracker: List[(Player, Int)] = List()
   private var createdPlayers: Int = 0
   private var triesToGetOutOfStartHouse: Int = 0
+  private var isInExecutePlayerMove: Boolean = false
+  private var showDiceResult: Boolean = true
 
+  def getIsInExecutePlayerMove: Boolean = isInExecutePlayerMove
+  def setIsInExecutePlayerMove(isInExecutePlayerMove: Boolean): Unit = {
+    this.isInExecutePlayerMove = isInExecutePlayerMove
+  }
   def getStartingPlayerTracker: List[(Player, Int)] = startingPlayerTracker
   def getTriesToGetOutOfStartHouse: Int = triesToGetOutOfStartHouse
   def incrementTriesToGetOutOfStartHouse(): Unit = {
@@ -117,14 +123,61 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   }
 
   def getInGamePhaseString: String = {
-    ConsoleView.displayInGamePhaseString(this)
+    /*if (isInExecutePlayerMove) {
+      return getExecutePlayerTurnPhaseString
+    }
+
+    ConsoleView.displayInGamePhaseString(this)*/
+    val ruleController = new RuleController()
+
+    val sb = new StringBuilder()
+
+    if (showDiceResult) {
+      sb.append(ConsoleView.displayDiceRoll(gameDice.getLastRoll(), getCurrentPlayer().getPlayerName()))
+    }
+
+    if (getTriesToGetOutOfStartHouse == 0) {
+      sb.append(displayDivider())
+
+      sb.append(s"${getCurrentPlayer().getPlayerName()} ist am Zug.\n")
+      sb.append('\n')
+
+      sb.append(ConsoleView.displayGameBoard(this))
+
+      if (isInExecutePlayerMove) {
+        sb.append(ConsoleView.displayPlayerCanEnterPiece())
+        val validMoves = currentPlayer.getPieces().zipWithIndex.collect {
+          case (piece, index) if ruleController.validateMove(piece, this) =>
+            sb.append(ConsoleView.displayValideMove(piece))
+            index + 1
+        }
+
+        if (validMoves.isEmpty) {
+          sb.clear()
+          sb.append(ConsoleView.displaNoValidMoves())
+          return sb.toString()
+        }
+
+        sb.append(ConsoleView.displayWhichPieceToMove())
+        showDiceResult = false
+      } else{
+        showDiceResult = true
+        sb.append(ConsoleView.displayPleaseRoll(getCurrentPlayer()))
+      }
+    } else {
+      sb.append("\nDu kannst noch nicht aus dem Haus ziehen!\n")
+      sb.append("Du hast noch " + (3 - getTriesToGetOutOfStartHouse) + " Versuch(e)\n")
+      sb.append("-------------------------\n")
+      sb.append(ConsoleView.displayPleaseRoll(getCurrentPlayer()))
+    }
+
+    sb.toString()
   }
 
   def getExecutePlayerTurnPhaseString: String = {
     val ruleController = new RuleController()
     val sb = new StringBuilder()
 
-    sb.append(ConsoleView.displayGameBoard(this))
 
     sb.append(ConsoleView.displayPlayerCanEnterPiece())
     val validMoves = currentPlayer.getPieces().zipWithIndex.collect {

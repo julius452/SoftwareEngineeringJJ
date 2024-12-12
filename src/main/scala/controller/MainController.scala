@@ -2,7 +2,7 @@ package controller
 
 import command.{CommandManager, MovePieceCommand}
 import model.GameState
-import state.{DetermineStartPlayerPhase, ExecutePlayerTurnPhase, GamePhase, InGamePhase, PlayerSetupPhase, StartPhase}
+import state.{DetermineStartPlayerPhase, GameOverPhase, GamePhase, InGamePhase, PlayerSetupPhase, StartPhase}
 
 class MainController(var gameState: GameState) extends ControllerInterface {
   var state: GamePhase = StartPhase(this)
@@ -44,7 +44,7 @@ class MainController(var gameState: GameState) extends ControllerInterface {
       case _: PlayerSetupPhase => "PlayerSetupPhase"
       case _: DetermineStartPlayerPhase => "DetermineStartPlayerPhase"
       case _: InGamePhase => "InGamePhase"
-      case _: ExecutePlayerTurnPhase => "ExecutePlayerTurnPhase"
+      case _: GameOverPhase => "GameOverPhase"
     }
   }
 
