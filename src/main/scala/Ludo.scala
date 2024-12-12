@@ -1,6 +1,7 @@
 import builder.GameStateBuilder
 import controller.MainController
 import view.TUI
+import view.gui.SwingGui
 
 import scala.io.StdIn.readLine
 
@@ -13,7 +14,7 @@ object Ludo extends App {
   val controller: MainController = new MainController(gameState)
 
   val tui = new TUI(controller)
-  //val gui = new SwingGui(controller)
+  val gui = new SwingGui(controller)
   controller.notifyObservers()
 
   var input: String = ""

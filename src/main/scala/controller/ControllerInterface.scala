@@ -8,4 +8,6 @@ trait ControllerInterface extends Observable{
   def undo(): Unit
   def redo(): Unit
   def doStep(input: Int): Unit
+  def controllerStateAsString: String
+  def getCurrentPlayerSetUpNumber: Int
 }

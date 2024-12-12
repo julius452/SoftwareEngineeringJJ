@@ -142,4 +142,6 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
     sb.append(ConsoleView.displayWhichPieceToMove())
     sb.toString()
   }
+
+  def getCurrentPlayerNumber: Int = currentPlayer.getPlayerNumber()
 }
