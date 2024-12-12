@@ -185,60 +185,7 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     }
   }
 
-  def setupGame(playerCount: Int): Unit = {
-    // Erstelle ein Array, das die Spieler-IDs für jedes Feld speichert.
-    // -1 bedeutet, dass das Feld leer ist
-    val fieldContents = Array.fill(11, 11)(0) // 2D-Array für die Felder, initial auf -1 gesetzt
 
-    // Fülle das Spielfeld basierend auf der Spieleranzahl
-    playerCount match {
-      case 2 =>
-        // Gelb mit 1 und Blau mit 2 füllen
-        for (i <- 0 to 3) {
-          val (row, col) = getFieldFromID(i) // Berechne die Position basierend auf der ID
-          fieldContents(row)(col) = 1  // Spieler 1 (Gelb)
-        }
-        for (i <- 4 to 7) {
-          val (row, col) = getFieldFromID(i) // Berechne die Position basierend auf der ID
-          fieldContents(row)(col) = 2  // Spieler 2 (Blau)
-        }
-
-      case 3 =>
-        // Gelb mit 1, Blau mit 2 und Rot mit 3 füllen
-        for (i <- 0 to 3) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 1  // Spieler 1 (Gelb)
-        }
-        for (i <- 4 to 7) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 2  // Spieler 2 (Blau)
-        }
-        for (i <- 8 to 11) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 3  // Spieler 3 (Rot)
-        }
-
-      case 4 =>
-        // Gelb mit 1, Blau mit 2, Rot mit 3 und Grün mit 4 füllen
-        for (i <- 0 to 3) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 1  // Spieler 1 (Gelb)
-        }
-        for (i <- 4 to 7) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 2  // Spieler 2 (Blau)
-        }
-        for (i <- 8 to 11) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 3  // Spieler 3 (Rot)
-        }
-        for (i <- 12 to 15) {
-          val (row, col) = getFieldFromID(i)
-          fieldContents(row)(col) = 4  // Spieler 4 (Grün)
-        }
-    }
-
-  }
 
 
   def drawPlayer(g: Graphics, row: Int, col: Int, playerId: Int): Unit = {
