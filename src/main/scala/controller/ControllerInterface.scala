@@ -10,4 +10,5 @@ trait ControllerInterface extends Observable{
   def doStep(input: Int): Unit
   def controllerStateAsString: String
   def getCurrentPlayerSetUpNumber: Int
+  def getCurrentPlayerName: String
 }

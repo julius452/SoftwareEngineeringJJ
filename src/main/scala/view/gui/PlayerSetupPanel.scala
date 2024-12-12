@@ -20,6 +20,10 @@ class PlayerSetupPanel(controller: ControllerInterface) extends BoxPanel(Orienta
     }
   }
 
+  Swing.onEDT {
+    nameTextBox.requestFocusInWindow()
+  }
+
   val nextButton = new Button("\u2192")
   val prevButton = new Button("\u2190")
 

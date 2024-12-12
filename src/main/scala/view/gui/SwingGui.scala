@@ -32,6 +32,8 @@ object SwingGui {
     controller.controllerStateAsString match {
       case "StartPhase" => new WelcomePanel(controller)
       case "PlayerSetupPhase" => new PlayerSetupPanel(controller)
+      case "DetermineStartPlayerPhase" => new DetermineStartPlayerPanel(controller)
+      case "InGamePhase" => new InGamePanel(controller)
     }
   }
 }

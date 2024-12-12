@@ -49,6 +49,8 @@ class MainController(var gameState: GameState) extends ControllerInterface {
   }
 
   override def getCurrentPlayerSetUpNumber: Int = gameState.getterPlayersList().size + 1
+
+  override def getCurrentPlayerName: String = gameState.getCurrentPlayer().getPlayerName()
 }
 
 object MainController{

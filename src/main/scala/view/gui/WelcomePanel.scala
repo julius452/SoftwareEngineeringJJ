@@ -2,6 +2,8 @@ package view.gui
 
 import controller.ControllerInterface
 
+import java.awt.{GraphicsEnvironment, Font}
+import java.io.File
 import javax.swing.BorderFactory
 import scala.swing._
 import scala.swing.event.ButtonClicked
@@ -10,6 +12,18 @@ class WelcomePanel (controller: ControllerInterface) extends BoxPanel(Orientatio
   background = new Color(0, 100, 0)
   border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
   val myFont = new Font("Herculanum", java.awt.Font.PLAIN, 20)
+
+  // Lade die Schriftart aus der .ttf Datei
+  val headerFontFile = new File("src/main/resources/fonts/Birthstone-Regular.ttf")
+  val customFont = Font.createFont(Font.TRUETYPE_FONT, headerFontFile)
+
+  // Registriere die Schriftart im GraphicsEnvironment
+  val ge = GraphicsEnvironment.getLocalGraphicsEnvironment
+  ge.registerFont(customFont)
+
+  // Setze die Schriftart
+  val myHeaderFont = customFont.deriveFont(Font.PLAIN, 60)
+
   val twoPlayerButton: Button = new Button("2 Players") {
     font = myFont
   }
@@ -23,16 +37,14 @@ class WelcomePanel (controller: ControllerInterface) extends BoxPanel(Orientatio
   }
 
   contents += new FlowPanel() {
-    contents += new Label {
-      //private val temp = new ImageIcon("src/main/resources/wizard_logo.png").getImage
-      //private val resize = temp.getScaledInstance(800, 500, java.awt.Image.SCALE_SMOOTH)
-      //icon = new ImageIcon(resize)
+    contents += new Label("Willkommen zu Mensch ärgere dich nicht!  ") {
+      font = myHeaderFont
     }
   }
 
   contents += new FlowPanel() {
-    contents += new Label("How many Players?") {
-      font = new Font("Herculanum", java.awt.Font.PLAIN, 40)
+    contents += new Label("Wie viele Spieler wollen mitspielen?") {
+      font = myFont
     }
   }
 
