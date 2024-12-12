@@ -1,14 +1,19 @@
 package view.gui
 
+
 import controller.ControllerInterface
 import sun.tools.jconsole.LabeledComponent.layout
+import view.gui.WelcomePanel
 
 import scala.swing._
 import java.awt.{Color, Dimension, Graphics}
 import javax.swing.{BorderFactory, JOptionPane}
 import scala.swing.event.ButtonClicked
 
+
 class InGamePanel(controller: ControllerInterface) extends BorderPanel {
+
+
 
   // Left half: Game board panel
   val gameBoardPanel = new Panel {
@@ -37,10 +42,17 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
             g.setColor(Color.BLACK) // Border color
             g.drawRoundRect(x, y, cellSize - 5, cellSize - 5, 1000, 1000) // Cell border
           }
+
+
         }
+
       }
+
     }
   }
+
+
+
 
   def drawColor(row: Int, col: Int): Color = {
     // Home areas for each player (Red, Green, Blue, Yellow)
@@ -92,6 +104,62 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     }
   }
 
+  def getFieldFromID(id: Int): (Int, Int) = {
+    // Home Bereiche (Gelb 0-3, Blau 4-7, Rot 8-11, Grün 12-15)
+    if (id >= 0 && id <= 3) {
+      return (id / 2, id % 2) // Gelb - ID 0-3
+    } else if (id >= 8 && id <= 11) {
+      return ((id - 8) / 2, (id - 8) % 2 + 9) // Rot - ID 8-11
+    } else if (id >= 4 && id <= 7) {
+      return ((id - 4) / 2 + 9, (id - 4) % 2 + 9) // Blau - ID 4-7
+    } else if (id >= 12 && id <= 15) {
+      return ((id - 12) / 2 + 9, (id - 12) % 2) // Grün - ID 12-15
+    }
+
+    // Set Startpunkte (Gelber Startpunkt: ID 16)
+    else if (id == 16) {
+      return (4, 0)
+    } else if (id == 17) {
+      return (0, 6)
+    } else if (id == 18) {
+      return (6, 10)
+    } else if (id == 19) {
+      return (10, 4)
+    }
+
+    // Setze die Felder entlang des Pfades nach dem Gelben Start
+    else if (id >= 20 && id <= 23) {
+      return (4, id - 20 + 1) // Gelbe Felder rechts
+    } else if (id >= 24 && id <= 27) {
+      return (id - 24, 4) // Aufwärts
+    } else if (id == 27) {
+      return (0, 5)
+    } else if (id >= 28 && id <= 31) {
+      return (id - 28 + 1, 6) // Rechts
+    } else if (id >= 32 && id <= 35) {
+      return (4, id - 32 + 7) // Rechts
+    } else if (id == 36) {
+      return (5, 10)
+    } else if (id >= 37 && id <= 40) {
+      return (6, id - 37 + 6) // Runter
+    } else if (id >= 41 && id <= 44) {
+      return (id - 41 + 7, 6) // Runter
+    } else if (id == 45) {
+      return (10, 5)
+    } else if (id >= 46 && id <= 49) {
+      return (6, id - 46 + 4) // Nach links
+    } else if (id >= 50 && id <= 53) {
+      return (6, id - 50) // Nach links
+    } else if (id == 54) {
+      return (5, 0)
+    }
+
+    // Alle anderen Felder sind leer oder nicht im Spielpfad
+    else {
+      return (-1, -1) // Ungültige ID
+    }
+  }
+
   def getFieldIndex(row: Int, col: Int): Int = {
     // Deine Logik, um den Index des Arrays auf die Position im 10x10-Gitter abzubilden
     if (row >= 1 && row <= 4 && col == 0) // Top left section
@@ -116,6 +184,62 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
       -1
     }
   }
+
+  def setupGame(playerCount: Int): Unit = {
+    // Erstelle ein Array, das die Spieler-IDs für jedes Feld speichert.
+    // -1 bedeutet, dass das Feld leer ist
+    val fieldContents = Array.fill(11, 11)(0) // 2D-Array für die Felder, initial auf -1 gesetzt
+
+    // Fülle das Spielfeld basierend auf der Spieleranzahl
+    playerCount match {
+      case 2 =>
+        // Gelb mit 1 und Blau mit 2 füllen
+        for (i <- 0 to 3) {
+          val (row, col) = getFieldFromID(i) // Berechne die Position basierend auf der ID
+          fieldContents(row)(col) = 1  // Spieler 1 (Gelb)
+        }
+        for (i <- 4 to 7) {
+          val (row, col) = getFieldFromID(i) // Berechne die Position basierend auf der ID
+          fieldContents(row)(col) = 2  // Spieler 2 (Blau)
+        }
+
+      case 3 =>
+        // Gelb mit 1, Blau mit 2 und Rot mit 3 füllen
+        for (i <- 0 to 3) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 1  // Spieler 1 (Gelb)
+        }
+        for (i <- 4 to 7) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 2  // Spieler 2 (Blau)
+        }
+        for (i <- 8 to 11) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 3  // Spieler 3 (Rot)
+        }
+
+      case 4 =>
+        // Gelb mit 1, Blau mit 2, Rot mit 3 und Grün mit 4 füllen
+        for (i <- 0 to 3) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 1  // Spieler 1 (Gelb)
+        }
+        for (i <- 4 to 7) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 2  // Spieler 2 (Blau)
+        }
+        for (i <- 8 to 11) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 3  // Spieler 3 (Rot)
+        }
+        for (i <- 12 to 15) {
+          val (row, col) = getFieldFromID(i)
+          fieldContents(row)(col) = 4  // Spieler 4 (Grün)
+        }
+    }
+
+  }
+
 
   def drawPlayer(g: Graphics, row: Int, col: Int, playerId: Int): Unit = {
     // Hier kannst du Spielfiguren basierend auf playerId zeichnen
@@ -169,7 +293,15 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
         contents += new Label("Keine gültigen Züge verfügbar.")
       } else {
         validMoves.foreach { move =>
-          contents += new Label(s"Zug: ${move}")
+          // Erstelle einen Button mit dem Zug
+          val moveButton = new Button(s"Zug: ${move}") {
+            // Listener für Button-Klicks
+            //reactions += {
+             // case event: javax.swing.event.ActionEvent =>
+          //      controller.performMove(move)  // Ausführen des Zugs
+            //}
+          }
+          contents += moveButton
         }
         background = Color.WHITE
         border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Player Info")
@@ -183,6 +315,10 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     }
 
 
+
     layout(gameBoardPanel) = BorderPanel.Position.West
     layout(rightPanel) = BorderPanel.Position.East
+
+
+
   }
