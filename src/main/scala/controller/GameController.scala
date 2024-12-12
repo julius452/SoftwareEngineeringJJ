@@ -35,6 +35,7 @@ class GameController {
 
     gameLoop()
   }
+  def getGameState: GameState = _gameState
 
   def determineStartingPlayer(players: List[Player]): Player = {
     val playersWithRolls = players.map { player =>
