@@ -8,13 +8,13 @@ import scala.swing._
 class SwingGui(controller: ControllerInterface) extends Frame with Observer{
   controller.add(this)
 
-  title = "Mensch ärgere dich nicht"
+  title = "Mensch ärgere dich nicht!"
 
   contents = new WelcomePanel(controller)
 
   peer.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE)
   visible = true
-  centerOnScreen()
+  location = new Point(100, 100)
   resizable = false
   pack()
 

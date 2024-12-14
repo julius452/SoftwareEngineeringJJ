@@ -2,23 +2,41 @@ package view.gui
 
 
 import controller.ControllerInterface
+import model.Field
+import sun.tools.jconsole.LabeledComponent
 import sun.tools.jconsole.LabeledComponent.layout
+import view.ConsoleView
 import view.gui.WelcomePanel
 
-import scala.swing._
-import java.awt.{Color, Dimension, Graphics}
-import javax.swing.{BorderFactory, JOptionPane}
+import scala.swing.{FlowPanel, Label, _}
+import java.awt.{Color, Dimension, Font, Graphics, GraphicsEnvironment}
+import java.io.File
+import javax.swing.{BorderFactory, JFrame, JOptionPane}
 import scala.swing.event.ButtonClicked
 
 
 class InGamePanel(controller: ControllerInterface) extends BorderPanel {
+  background = new Color(0, 100, 0)
+  border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
+  preferredSize = new Dimension(1300, 710)
 
+  // Lade die Schriftart aus der .ttf Datei
+  val headerFontFile = new File("src/main/resources/fonts/Birthstone-Regular.ttf")
+  val customFont = Font.createFont(Font.TRUETYPE_FONT, headerFontFile)
 
+  // Registriere die Schriftart im GraphicsEnvironment
+  val ge = GraphicsEnvironment.getLocalGraphicsEnvironment
+  ge.registerFont(customFont)
+
+  // Setze die Schriftart
+  val myHeaderFont = customFont.deriveFont(Font.PLAIN, 60)
+  val myFont = customFont.deriveFont(Font.PLAIN, 30)
 
   // Left half: Game board panel
   val gameBoardPanel = new Panel {
-    preferredSize = new Dimension(400, 400)
+    preferredSize = new Dimension(700, 700)
     background = new Color(230, 230, 250) // Light purple
+    border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
 
     // Method to draw the game board
     override def paintComponent(g: Graphics2D): Unit = {
@@ -41,18 +59,54 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
             g.fillRoundRect(x, y, cellSize - 5, cellSize - 5, 1000, 1000)
             g.setColor(Color.BLACK) // Border color
             g.drawRoundRect(x, y, cellSize - 5, cellSize - 5, 1000, 1000) // Cell border
+
+            val fieldIndex = getFieldIndex(row, col)
+            var fieldText = ""
+
+            if (fieldIndex != -1) {
+              val field = controller.getFieldByPosition(fieldIndex)
+              if (field.getIsOccupied()) {
+                drawPlayer(g, x, y, field.getPiece().get.player.getPlayerNumber())
+                fieldText = s"${field.getPiece().get.player.getPlayerId() + field.getPiece().get.id}"
+              }
+            } else {
+              val isStartField = getStartField(row, col)
+            }
+
+            val fontMetrics = g.getFontMetrics
+            val textWidth = fontMetrics.stringWidth(fieldText)
+            val textHeight = fontMetrics.getHeight
+            val textX = x + (cellSize - textWidth) / 2
+            var textY = y + (cellSize - textHeight) / 2 + fontMetrics.getAscent
+            textY +=  5
+
+            g.drawString(fieldText, textX, textY)
           }
-
-
         }
-
       }
-
     }
   }
 
+  val playerImages: Map[Int, Image] = Map(
+    1 -> javax.imageio.ImageIO.read(new File("src/main/resources/images/figur-gelb.png")),
+    2 -> javax.imageio.ImageIO.read(new File("src/main/resources/images/figur-rot.png")),
+    3 -> javax.imageio.ImageIO.read(new File("src/main/resources/images/figur-blau.png")),
+    4 -> javax.imageio.ImageIO.read(new File("src/main/resources/images/figur-grun.png"))
+  )
 
+  def drawPlayer(g: Graphics, x: Int, y: Int, playerNumber: Int): Unit = {
+    val cellSize = size.width / 11
 
+    val playerSize = cellSize / 3
+
+    val playerX = x + 10
+    val playery = y + 10
+
+    val playerImage = playerImages.get(playerNumber)
+    playerImage.foreach { img =>
+      g.drawImage(img, playerX, playery, playerSize, playerSize, null)
+    }
+  }
 
   def drawColor(row: Int, col: Int): Color = {
     // Home areas for each player (Red, Green, Blue, Yellow)
@@ -104,168 +158,208 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     }
   }
 
-  def getFieldFromID(id: Int): (Int, Int) = {
-    // Home Bereiche (Gelb 0-3, Blau 4-7, Rot 8-11, Grün 12-15)
-    if (id >= 0 && id <= 3) {
-      return (id / 2, id % 2) // Gelb - ID 0-3
-    } else if (id >= 8 && id <= 11) {
-      return ((id - 8) / 2, (id - 8) % 2 + 9) // Rot - ID 8-11
-    } else if (id >= 4 && id <= 7) {
-      return ((id - 4) / 2 + 9, (id - 4) % 2 + 9) // Blau - ID 4-7
-    } else if (id >= 12 && id <= 15) {
-      return ((id - 12) / 2 + 9, (id - 12) % 2) // Grün - ID 12-15
-    }
-
-    // Set Startpunkte (Gelber Startpunkt: ID 16)
-    else if (id == 16) {
-      return (4, 0)
-    } else if (id == 17) {
-      return (0, 6)
-    } else if (id == 18) {
-      return (6, 10)
-    } else if (id == 19) {
-      return (10, 4)
-    }
-
-    // Setze die Felder entlang des Pfades nach dem Gelben Start
-    else if (id >= 20 && id <= 23) {
-      return (4, id - 20 + 1) // Gelbe Felder rechts
-    } else if (id >= 24 && id <= 27) {
-      return (id - 24, 4) // Aufwärts
-    } else if (id == 27) {
-      return (0, 5)
-    } else if (id >= 28 && id <= 31) {
-      return (id - 28 + 1, 6) // Rechts
-    } else if (id >= 32 && id <= 35) {
-      return (4, id - 32 + 7) // Rechts
-    } else if (id == 36) {
-      return (5, 10)
-    } else if (id >= 37 && id <= 40) {
-      return (6, id - 37 + 6) // Runter
-    } else if (id >= 41 && id <= 44) {
-      return (id - 41 + 7, 6) // Runter
-    } else if (id == 45) {
-      return (10, 5)
-    } else if (id >= 46 && id <= 49) {
-      return (6, id - 46 + 4) // Nach links
-    } else if (id >= 50 && id <= 53) {
-      return (6, id - 50) // Nach links
-    } else if (id == 54) {
-      return (5, 0)
-    }
-
-    // Alle anderen Felder sind leer oder nicht im Spielpfad
-    else {
-      return (-1, -1) // Ungültige ID
-    }
-  }
-
   def getFieldIndex(row: Int, col: Int): Int = {
-    // Deine Logik, um den Index des Arrays auf die Position im 10x10-Gitter abzubilden
-    if (row >= 1 && row <= 4 && col == 0) // Top left section
-      return -1
-    else if (row >= 1 && row <= 4 && col == 10) // Top right section
-      return -1
-    else if (row >= 6 && row <= 9 && col == 0) // Bottom left section
-      return -1
-    else if (row >= 6 && row <= 9 && col == 10) // Bottom right section
-      return -1
-    else if (row == 4 && col == 4) // Start for player 1
-      return -1
-    else if (row == 4 && col == 6) // Start for player 2
-      return -1
-    else if (row == 6 && col == 6) // Start for player 3
-      return -1
-    else if (row == 6 && col == 4) // Start for player 4
-      return -1
-    else {
-      // Gib dir den Index in den mittleren Pfaden zurück
-      // Diese Logik muss für den Spielpfad und jede andere relevante Position angepasst werden
-      -1
+    (row, col) match {
+      case (4, 0) => 0
+      case (4, 1) => 1
+      case (4, 2) => 2
+      case (4, 3) => 3
+      case (4, 4) => 4
+
+      case (3, 4) => 5
+      case (2, 4) => 6
+      case (1, 4) => 7
+      case (0, 4) => 8
+
+      case (0, 5) => 9
+      case (0, 6) => 10
+
+      case (1, 6) => 11
+      case (2, 6) => 12
+      case (3, 6) => 13
+      case (4, 6) => 14
+
+      case (4, 7) => 15
+      case (4, 8) => 16
+      case (4, 9) => 17
+      case (4, 10) => 18
+
+      case (5, 10) => 19
+      case (6, 10) => 20
+
+      case (6, 9) => 21
+      case (6, 8) => 22
+      case (6, 7) => 23
+      case (6, 6) => 24
+
+      case (7, 6) => 25
+      case (8, 6) => 26
+      case (9, 6) => 27
+      case (10, 6) => 28
+
+      case (10, 5) => 29
+      case (10, 4) => 30
+
+      case (9, 4) => 31
+      case (8, 4) => 32
+      case (7, 4) => 33
+      case (6, 4) => 34
+
+      case (6, 3) => 35
+      case (6, 2) => 36
+      case (6, 1) => 37
+      case (6, 0) => 38
+
+      case (5, 0) => 39
+
+      case _ => getStartField(row, col)
     }
   }
 
+  def getStartField(row: Int, col: Int): Int = {
+    (controller.getPlayerCount, (row, col)) match {
+      // Player 1
+      case (2 | 3 | 4, (0, 0)) => -1
+      case (2 | 3 | 4, (0, 1)) => -1
+      case (2 | 3 | 4, (1, 0)) => -1
+      case (2 | 3 | 4, (1, 1)) => -1
 
+      // Player 2
+      case (2 | 3 | 4, (0, 9)) => -1
+      case (2 | 3 | 4, (0, 10)) => -1
+      case (2 | 3 | 4, (1, 9)) => -1
+      case (2 | 3 | 4, (1, 10)) => -1
 
+      // Player 3
+      case (3 | 4, (9, 9)) => -1
+      case (3 | 4, (9, 10)) => -1
+      case (3 | 4, (10, 9)) => -1
+      case (3 | 4, (10, 10)) => -1
 
-  def drawPlayer(g: Graphics, row: Int, col: Int, playerId: Int): Unit = {
-    // Hier kannst du Spielfiguren basierend auf playerId zeichnen
-    val cellSize = size.width / 11
-    val x = col * cellSize + cellSize / 4
-    val y = row * cellSize + cellSize / 4
-    val playerSize = cellSize / 2
+      // Player 4
+      case (4, (9, 0)) => -1
+      case (4, (9, 1)) => -1
+      case (4, (10, 0)) => -1
+      case (4, (10, 1)) => -1
 
-    // Set the color based on the playerId (example: 0 = Red, 1 = Green, etc.)
-    val playerColor = playerId match {
-      case 0 => Color.RED
-      case 1 => Color.GREEN
-      case 2 => Color.BLUE
-      case 3 => Color.YELLOW
-      case _ => Color.BLACK
+      // Default case
+      case _ => -1
     }
-
-    // Draw the player piece
-    g.setColor(playerColor)
-    g.fillOval(x, y, playerSize, playerSize)
   }
 
   // Würfel Button
-  val rollButton = new Button("Würfeln")
+  val rollButton = new Button("Würfeln") {
+    font = myFont
+    preferredSize = new Dimension(100, 100)
+  }
 
+  val currentRoll =new FlowPanel(){
+    contents += new Label(ConsoleView.displayDiceRoll(controller.getLastRoll, controller.getCurrentPlayerName)) {
+      font = myFont
+    }
+  }
 
   // Right half: Split into top and bottom panels
-  val rightPanelTop = new BoxPanel(Orientation.Vertical) {
+  val rightPanelTop = new FlowPanel() {
     contents += rollButton
-    background = Color.WHITE
-    border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Rolling Dice")
+    contents += currentRoll
 
     listenTo(rollButton)
     reactions += {
       case ButtonClicked(`rollButton`) => {
-        val currentPlayer = controller.getCurrentPlayerName
         controller.eval("w")
-        val sb = new StringBuilder()
-
-        sb.append(s"$currentPlayer hat eine ${controller.getLastRoll} gewürfelt!\n")
-
-
-        JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
-      }}
-    }
-
-    val rightPanelBottom = new BoxPanel(Orientation.Vertical) {
-      val validMoves = controller.getValidMoves
-      contents += new Label(controller.getCurrentPlayerName + " ist am Zug")
-      if (validMoves.isEmpty) {
-        contents += new Label("Keine gültigen Züge verfügbar.")
-      } else {
-        validMoves.foreach { move =>
-          // Erstelle einen Button mit dem Zug
-          val moveButton = new Button(s"Zug: ${move}") {
-            // Listener für Button-Klicks
-            //reactions += {
-             // case event: javax.swing.event.ActionEvent =>
-          //      controller.performMove(move)  // Ausführen des Zugs
-            //}
-          }
-          contents += moveButton
-        }
-        background = Color.WHITE
-        border = Swing.TitledBorder(Swing.LineBorder(Color.BLACK), "Player Info")
       }
     }
+  }
 
-    val rightPanel = new BoxPanel(Orientation.Vertical) {
-      contents += rightPanelTop
-      contents += Swing.VStrut(10)
-      contents += rightPanelBottom
+    val rightPanelBottom = new BoxPanel(Orientation.Vertical) {
+      border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
+
+      var counter = 0
+      val validMoves = controller.getValidMoves
+
+      val playerInfoLabel = new BoxPanel(Orientation.Vertical){
+        contents += new Label(controller.getCurrentPlayerName + " ist am Zug") {
+          font = myFont
+        }
+      }
+
+      val playerInfo = new BoxPanel(Orientation.Vertical) {
+        if (!controller.getIsExecutePlayerMove) {
+          contents += new Label("Bitte zuerst würfeln!") {
+            font = myFont
+          }
+        } else {
+          if (validMoves.isEmpty) {
+            contents += new Label("Keine gültigen Züge verfügbar.") {
+              font = myFont
+            }
+          } else {
+            validMoves.foreach { move =>
+              val output = s"${move._2}"
+              if (counter == 0) {
+                val buttonMove1 = new Button(output) {
+                  font = myFont
+                }
+                contents += buttonMove1
+                listenTo(buttonMove1)
+                reactions += {
+                  case ButtonClicked(`buttonMove1`) => {
+                    controller.eval("1")
+                  }
+                }
+              } else if (counter == 1) {
+                val buttonMove2 = new Button(output) {
+                  font = myFont
+                }
+                contents += buttonMove2
+                listenTo(buttonMove2)
+                reactions += {
+                  case ButtonClicked(`buttonMove2`) => {
+                    controller.eval("2")
+                  }
+                }
+              } else if (counter == 2) {
+                val buttonMove3 = new Button(output) {
+                  font = myFont
+                }
+                contents += buttonMove3
+                listenTo(buttonMove3)
+                reactions += {
+                  case ButtonClicked(`buttonMove3`) => {
+                    controller.eval("3")
+                  }
+                }
+              } else if (counter == 3) {
+                val buttonMove4 = new Button(output) {
+                  font = myFont
+                }
+                contents += buttonMove4
+                listenTo(buttonMove4)
+                reactions += {
+                  case ButtonClicked(`buttonMove4`) => {
+                    controller.eval("4")
+                  }
+                }
+              }
+              counter += 1
+            }
+          }
+        }
+      }
+
+      contents += playerInfoLabel
+      contents += playerInfo
     }
 
+    val rightPanel = new  BorderPanel() {
+      preferredSize = new Dimension(560, 710)
 
+      layout(rightPanelTop) = BorderPanel.Position.North
+      //contents += Swing.VStrut(10)
+      layout(rightPanelBottom) = BorderPanel.Position.Center
+    }
 
     layout(gameBoardPanel) = BorderPanel.Position.West
     layout(rightPanel) = BorderPanel.Position.East
-
-
-
-  }
+}

@@ -1,6 +1,7 @@
 package model
 
 import controller.RuleController
+import memento.Caretaker
 import view.ConsoleView
 import view.ConsoleView.displayDivider
 
@@ -45,7 +46,14 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   private var triesToGetOutOfStartHouse: Int = 0
   private var isInExecutePlayerMove: Boolean = false
   private var showDiceResult: Boolean = true
+  val careTaker = new Caretaker()
 
+  def removePlayerFromList(player: Player): Unit = {
+    val newList = playersList.filterNot(p => p == player)
+    playersList = newList
+
+    decreaseCreatedPlayers()
+  }
   def getIsInExecutePlayerMove: Boolean = isInExecutePlayerMove
   def setIsInExecutePlayerMove(isInExecutePlayerMove: Boolean): Unit = {
     this.isInExecutePlayerMove = isInExecutePlayerMove
@@ -77,6 +85,8 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
     val newPlayer = Player(id, playerName)
     newPlayer.initializeHousesAndPieces()
 
+    careTaker.save(newPlayer)
+
     val newPlayerList = oldPlayerList ::: List(newPlayer)
 
     playersList = newPlayerList
@@ -85,9 +95,16 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   }
 
   def getCreatedPlayers: Int = createdPlayers
+  def decreaseCreatedPlayers(): Unit = {
+    createdPlayers -= 1
+  }
+
+  def getFieldByPosition(position: Int): Field = {
+    board.getFields()(position)
+  }
 
   def getPlayerSetupPhaseString: String = {
-    ConsoleView.displayPlayerSetupPhase(playersList.size + 1)
+    ConsoleView.displayPlayerSetupPhase(createdPlayers + 1)
   }
 
   def getDetermineStartPlayerPhaseString: String = {
@@ -123,11 +140,6 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   }
 
   def getInGamePhaseString: String = {
-    /*if (isInExecutePlayerMove) {
-      return getExecutePlayerTurnPhaseString
-    }
-
-    ConsoleView.displayInGamePhaseString(this)*/
     val ruleController = new RuleController()
 
     val sb = new StringBuilder()
@@ -180,12 +192,9 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
     // Überprüfe die Züge aller Spielfiguren des aktuellen Spielers
     currentPlayer.getPieces().zipWithIndex.collect {
       case (piece, index) if ruleController.validateMove(piece, this) =>
-        (index, s"Figur ${index + 1} kann sich bewegen.")
+        (index, ConsoleView.displayValideMove(piece))
     }.toList
   }
-
-
-
 
   def getExecutePlayerTurnPhaseString: String = {
     val ruleController = new RuleController()

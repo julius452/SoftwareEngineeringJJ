@@ -15,6 +15,8 @@ case class GameBoard() {
     }
   }
 
+  def getFieldByPosition(position: Int): Field = fields(position)
+
   def getFields(): Array[Field] = fields
 }
 

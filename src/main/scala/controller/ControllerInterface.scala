@@ -1,5 +1,6 @@
 package controller
 
+import model.{Field, Player}
 import util.Observable
 
 trait ControllerInterface extends Observable{
@@ -15,4 +16,8 @@ trait ControllerInterface extends Observable{
   def getRollCounter: Int
   def getPlayerCount: Int
   def getValidMoves: List[(Int,String)]
+  def getIsExecutePlayerMove: Boolean
+  def getCurrentPlayerNumber: Int
+  def getFieldByPosition(position: Int): Field
+  def getPlayers(): List[Player]
 }

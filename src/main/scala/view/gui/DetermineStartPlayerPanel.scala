@@ -2,72 +2,83 @@ package view.gui
 
 import controller.ControllerInterface
 
-import java.awt.{Color, GradientPaint}
+import java.awt.{Color, Font, GradientPaint, GraphicsEnvironment}
+import java.io.File
 import javax.swing.{BorderFactory, JOptionPane}
 import scala.swing._
-import scala.swing.event.ButtonClicked
+import scala.swing.event.{ButtonClicked, Key, KeyPressed}
 
-class DetermineStartPlayerPanel(controller: ControllerInterface) extends BoxPanel(Orientation.Vertical) {
-  background = new Color(240, 240, 240) // Light gray
+class DetermineStartPlayerPanel(controller: ControllerInterface) extends BorderPanel {
   border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
-  preferredSize = new Dimension(450, 250)
+  background = new Color(0, 100, 0)
+  preferredSize = new Dimension(1000, 330)
 
-  // Title
-  contents += new Label("Decide Start Player") {
-    font = new Font("Arial", java.awt.Font.BOLD, 24)
-    foreground = new Color(30, 144, 255) // Dodger Blue
-    horizontalAlignment = Alignment.Center
-  }
-  contents += Swing.VStrut(20)
+  val headerFontFile = new File("src/main/resources/fonts/Birthstone-Regular.ttf")
+  val customFont = Font.createFont(Font.TRUETYPE_FONT, headerFontFile)
 
-  // Current player label
-  contents += new Label(s"It's ${controller.getCurrentPlayerName}'s turn to roll the dice.") {
-    font = new Font("Arial", java.awt.Font.PLAIN, 18)
-    foreground = new Color(60, 60, 60) // Dark Gray
-    horizontalAlignment = Alignment.Center
-  }
-  contents += Swing.VStrut(20)
+  // Registriere die Schriftart im GraphicsEnvironment
+  val ge = GraphicsEnvironment.getLocalGraphicsEnvironment
+  ge.registerFont(customFont)
 
-  // Roll button
-  val rollButton = new Button("Roll Dice") {
-    font = new Font("Arial", java.awt.Font.PLAIN, 16)
-    background = new Color(173, 216, 230) // Light Blue
-    foreground = Color.WHITE
-    opaque = true
-    focusPainted = false
-    border = BorderFactory.createCompoundBorder(
-      BorderFactory.createLineBorder(new Color(30, 144, 255), 2),
-      BorderFactory.createEmptyBorder(5, 15, 5, 15)
-    )
-    peer.setContentAreaFilled(false)
-    peer.setOpaque(true)
-  }
+  // Setze die Schriftart
+  val myHeaderFont = customFont.deriveFont(Font.PLAIN, 60)
+  val myFont = customFont.deriveFont(Font.PLAIN, 40)
 
-  contents += new FlowPanel(FlowPanel.Alignment.Center)(rollButton)
-
-  // Custom background gradient
-  override def paintComponent(g: Graphics2D): Unit = {
-    super.paintComponent(g)
-    val gradient = new GradientPaint(0f, 0f, new Color(240, 248, 255), size.getWidth.toFloat, size.getHeight.toFloat, new Color(173, 216, 230))
-    g.setPaint(gradient)
-    g.fillRect(0, 0, size.width, size.height)
-  }
-
-  // Listen for button click
-  listenTo(rollButton)
-  reactions += {
-    case ButtonClicked(`rollButton`) => {
-      val currentPlayer = controller.getCurrentPlayerName
-      controller.eval("w")
-      val sb = new StringBuilder()
-
-      sb.append(s"$currentPlayer hat eine ${controller.getLastRoll} gewürfelt!\n")
-
-      if (controller.getRollCounter == controller.getPlayerCount) {
-        sb.append(s"${controller.getCurrentPlayerName} hat gewonnen und darf beginnen!")
-      }
-
-      JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
+  val headerLabel = new FlowPanel() {
+    contents += new Label("Der Startspieler wird ermittelt") {
+      font = myHeaderFont
+      foreground = Color.BLACK
     }
   }
+
+  val infoPanel = new FlowPanel() {
+    contents += new Label(s"${controller.getCurrentPlayerName} ist an der Reihe, bitte würfeln  ") {
+      font = myFont
+      foreground = Color.BLACK
+    }
+  }
+
+  val rollBtn = new Button("Würfeln") {
+    preferredSize = new Dimension(150, 150)
+    font = myFont
+    foreground = Color.BLACK
+  }
+
+  val rollButton = new FlowPanel() {
+    contents += rollBtn
+
+    listenTo(keys)
+    listenTo(rollBtn)
+
+    reactions += {
+      case KeyPressed(_, Key.Enter, _, _) => {
+        controller.eval("w")
+        val sb = new StringBuilder()
+
+        sb.append(s"${controller.getCurrentPlayerName} hat eine ${controller.getLastRoll} gewürfelt!\n")
+
+        if (controller.getRollCounter == controller.getPlayerCount) {
+          sb.append(s"${controller.getCurrentPlayerName} hat gewonnen und darf beginnen!")
+        }
+
+        JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
+      }
+      case ButtonClicked(`rollBtn`) => {
+        controller.eval("w")
+        val sb = new StringBuilder()
+
+        sb.append(s"${controller.getCurrentPlayerName} hat eine ${controller.getLastRoll} gewürfelt!\n")
+
+        if (controller.getRollCounter == controller.getPlayerCount) {
+          sb.append(s"${controller.getCurrentPlayerName} hat gewonnen und darf beginnen!")
+        }
+
+        JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
+      }
+    }
+  }
+
+  layout(headerLabel) = BorderPanel.Position.North
+  layout(infoPanel) = BorderPanel.Position.Center
+  layout(rollButton) = BorderPanel.Position.South
 }
