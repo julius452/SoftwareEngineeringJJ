@@ -66,6 +66,8 @@ class MainController(var gameState: GameState) extends ControllerInterface {
   override def getCurrentPlayerNumber: Int = gameState.getCurrentPlayer().getPlayerNumber()
   override def getFieldByPosition(position: Int): Field = gameState.getFieldByPosition(position)
   override def getPlayers(): List[Player] = gameState.getterPlayersList()
+  override def getStartHouseByPlayerAndIndex(playerNumber: Int, index: Int): Field = gameState.getStartHouseByPlayerAndIndex(playerNumber, index)
+  override def getLastPlayer: Player = gameState.lastTurn()
 }
 
 object MainController{

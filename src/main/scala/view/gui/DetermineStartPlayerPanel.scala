@@ -55,7 +55,7 @@ class DetermineStartPlayerPanel(controller: ControllerInterface) extends BorderP
         controller.eval("w")
         val sb = new StringBuilder()
 
-        sb.append(s"${controller.getCurrentPlayerName} hat eine ${controller.getLastRoll} gewürfelt!\n")
+        sb.append(s"${controller.getLastPlayer.getPlayerName()} hat eine ${controller.getLastRoll} gewürfelt!\n")
 
         if (controller.getRollCounter == controller.getPlayerCount) {
           sb.append(s"${controller.getCurrentPlayerName} hat gewonnen und darf beginnen!")
@@ -64,10 +64,11 @@ class DetermineStartPlayerPanel(controller: ControllerInterface) extends BorderP
         JOptionPane.showMessageDialog(null, sb.toString(), "Würfel Ergebnis", JOptionPane.INFORMATION_MESSAGE)
       }
       case ButtonClicked(`rollBtn`) => {
+        val lastPlayer = controller.getCurrentPlayerName
         controller.eval("w")
         val sb = new StringBuilder()
 
-        sb.append(s"${controller.getCurrentPlayerName} hat eine ${controller.getLastRoll} gewürfelt!\n")
+        sb.append(s"${lastPlayer} hat eine ${controller.getLastRoll} gewürfelt!\n")
 
         if (controller.getRollCounter == controller.getPlayerCount) {
           sb.append(s"${controller.getCurrentPlayerName} hat gewonnen und darf beginnen!")

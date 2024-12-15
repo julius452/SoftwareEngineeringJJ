@@ -70,7 +70,14 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
                 fieldText = s"${field.getPiece().get.player.getPlayerId() + field.getPiece().get.id}"
               }
             } else {
-              val isStartField = getStartField(row, col)
+              val startHouseField = getStarthouse(row, col)
+
+              if (startHouseField != null) {
+                if (startHouseField.getIsOccupied()) {
+                  drawPlayer(g, x, y, startHouseField.getPiece().get.player.getPlayerNumber())
+                  fieldText = s"${startHouseField.getPiece().get.player.getPlayerId() + startHouseField.getPiece().get.id}"
+                }
+              }
             }
 
             val fontMetrics = g.getFontMetrics
@@ -93,6 +100,37 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     3 -> javax.imageio.ImageIO.read(new File("src/main/resources/images/figur-blau.png")),
     4 -> javax.imageio.ImageIO.read(new File("src/main/resources/images/figur-grun.png"))
   )
+
+  def getStarthouse(row: Int, col: Int): Field = {
+    (controller.getPlayerCount, (row, col)) match {
+      // Player 1
+      case (2 | 3 | 4, (0, 0)) => controller.getStartHouseByPlayerAndIndex(1, 0)
+      case (2 | 3 | 4, (0, 1)) => controller.getStartHouseByPlayerAndIndex(1, 1)
+      case (2 | 3 | 4, (1, 0)) => controller.getStartHouseByPlayerAndIndex(1, 2)
+      case (2 | 3 | 4, (1, 1)) => controller.getStartHouseByPlayerAndIndex(1, 3)
+
+      // Player 2
+      case (2 | 3 | 4, (0, 9)) => controller.getStartHouseByPlayerAndIndex(2, 0)
+      case (2 | 3 | 4, (0, 10)) => controller.getStartHouseByPlayerAndIndex(2, 1)
+      case (2 | 3 | 4, (1, 9)) => controller.getStartHouseByPlayerAndIndex(2, 2)
+      case (2 | 3 | 4, (1, 10)) => controller.getStartHouseByPlayerAndIndex(2, 3)
+
+      // Player 3
+      case (3 | 4, (9, 9)) => controller.getStartHouseByPlayerAndIndex(3, 0)
+      case (3 | 4, (9, 10)) => controller.getStartHouseByPlayerAndIndex(3, 1)
+      case (3 | 4, (10, 9)) => controller.getStartHouseByPlayerAndIndex(3, 2)
+      case (3 | 4, (10, 10)) => controller.getStartHouseByPlayerAndIndex(3, 3)
+
+      // Player 4
+      case (4, (9, 0)) => controller.getStartHouseByPlayerAndIndex(4, 0)
+      case (4, (9, 1)) => controller.getStartHouseByPlayerAndIndex(4, 1)
+      case (4, (10, 0)) => controller.getStartHouseByPlayerAndIndex(4, 2)
+      case (4, (10, 1)) => controller.getStartHouseByPlayerAndIndex(4, 3)
+
+      // Default case
+      case _ => null
+    }
+  }
 
   def drawPlayer(g: Graphics, x: Int, y: Int, playerNumber: Int): Unit = {
     val cellSize = size.width / 11
@@ -212,37 +250,6 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
 
       case (5, 0) => 39
 
-      case _ => getStartField(row, col)
-    }
-  }
-
-  def getStartField(row: Int, col: Int): Int = {
-    (controller.getPlayerCount, (row, col)) match {
-      // Player 1
-      case (2 | 3 | 4, (0, 0)) => -1
-      case (2 | 3 | 4, (0, 1)) => -1
-      case (2 | 3 | 4, (1, 0)) => -1
-      case (2 | 3 | 4, (1, 1)) => -1
-
-      // Player 2
-      case (2 | 3 | 4, (0, 9)) => -1
-      case (2 | 3 | 4, (0, 10)) => -1
-      case (2 | 3 | 4, (1, 9)) => -1
-      case (2 | 3 | 4, (1, 10)) => -1
-
-      // Player 3
-      case (3 | 4, (9, 9)) => -1
-      case (3 | 4, (9, 10)) => -1
-      case (3 | 4, (10, 9)) => -1
-      case (3 | 4, (10, 10)) => -1
-
-      // Player 4
-      case (4, (9, 0)) => -1
-      case (4, (9, 1)) => -1
-      case (4, (10, 0)) => -1
-      case (4, (10, 1)) => -1
-
-      // Default case
       case _ => -1
     }
   }

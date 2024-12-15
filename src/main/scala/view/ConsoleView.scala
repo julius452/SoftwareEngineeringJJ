@@ -22,7 +22,8 @@ object ConsoleView{
   def displayDetermineStartPlayerPhase(gameState: GameState): String = {
     val sb = new StringBuilder()
     if (gameState.gameDice.getLastRoll() != 0) {
-      sb.append(displayDiceRoll(gameState.gameDice.getLastRoll(), gameState.getCurrentPlayer().getPlayerName()))
+      val lastPlayer = gameState.lastTurn()
+      sb.append(displayDiceRoll(gameState.gameDice.getLastRoll(), lastPlayer.getPlayerName()))
     }
 
     sb.append(displayDivider())

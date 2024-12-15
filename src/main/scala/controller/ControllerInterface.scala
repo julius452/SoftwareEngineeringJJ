@@ -20,4 +20,6 @@ trait ControllerInterface extends Observable{
   def getCurrentPlayerNumber: Int
   def getFieldByPosition(position: Int): Field
   def getPlayers(): List[Player]
+  def getStartHouseByPlayerAndIndex(playerNumber: Int, index: Int): Field
+  def getLastPlayer: Player
 }

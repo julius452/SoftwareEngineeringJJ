@@ -37,6 +37,13 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
     updateCurrentPlayer(nextPlayer)
   }
 
+  def lastTurn(): Player = {
+    val currentIndex = playersList.indexOf(currentPlayer)
+    val lastPlayer = playersList((currentIndex - 1))
+
+    lastPlayer
+  }
+
   // ---
 
   private var playersCount: Int = 0
@@ -219,4 +226,8 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   }
 
   def getCurrentPlayerNumber: Int = currentPlayer.getPlayerNumber()
+
+  def getStartHouseByPlayerAndIndex(playerNumber: Int, index: Int): Field = {
+    playersList(playerNumber - 1).getStartHouse()(index)
+  }
 }
