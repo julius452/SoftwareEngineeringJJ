@@ -230,4 +230,8 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
   def getStartHouseByPlayerAndIndex(playerNumber: Int, index: Int): Field = {
     playersList(playerNumber - 1).getStartHouse()(index)
   }
+
+  def getPlayerNameByPlayerNumber(playerNumber: Int): String = {
+    playersList(playerNumber - 1).getPlayerName()
+  }
 }

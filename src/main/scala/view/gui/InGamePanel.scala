@@ -12,6 +12,7 @@ import scala.swing.{FlowPanel, Label, _}
 import java.awt.{Color, Dimension, Font, Graphics, GraphicsEnvironment}
 import java.io.File
 import javax.swing.{BorderFactory, JFrame, JOptionPane}
+import scala.swing
 import scala.swing.event.ButtonClicked
 
 
@@ -31,6 +32,7 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
   // Setze die Schriftart
   val myHeaderFont = customFont.deriveFont(Font.PLAIN, 60)
   val myFont = customFont.deriveFont(Font.PLAIN, 30)
+  val pieceText = new Font("Arial", Font.BOLD, 17)
 
   // Left half: Game board panel
   val gameBoardPanel = new Panel {
@@ -44,6 +46,8 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
 
       // Calculate the size of each cell (10x10 grid)
       val cellSize = size.width / 11
+
+      g.setFont(pieceText)
 
       // Draw the cells in a 10x10 grid
       for (row <- 0 until 11) {
@@ -73,6 +77,7 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
               val startHouseField = getStarthouse(row, col)
 
               if (startHouseField != null) {
+                g.setColor(Color.darkGray)
                 if (startHouseField.getIsOccupied()) {
                   drawPlayer(g, x, y, startHouseField.getPiece().get.player.getPlayerNumber())
                   fieldText = s"${startHouseField.getPiece().get.player.getPlayerId() + startHouseField.getPiece().get.id}"
@@ -88,10 +93,35 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
             textY +=  5
 
             g.drawString(fieldText, textX, textY)
+          } else {
+            g.setColor(Color.BLACK)
+
+            drawPlayerName(g, x, y, row, col)
           }
         }
       }
     }
+  }
+
+  def drawPlayerName(g: Graphics2D, x: Int, y: Int, row: Int, col: Int): Unit = {
+    var fieldText = ""
+    (row, col) match {
+      case (2, 0) => fieldText = controller.getPlayerNameByPlayerNumber(1)
+      case (2, 9) => fieldText = controller.getPlayerNameByPlayerNumber(2)
+      case (8, 9) => fieldText = controller.getPlayerNameByPlayerNumber(3)
+      case (8, 0) => fieldText = controller.getPlayerNameByPlayerNumber(4)
+      case _ => return
+    }
+
+    val cellSize = size.width / 11
+
+    val fontMetrics = g.getFontMetrics
+    val textWidth = fontMetrics.stringWidth(fieldText)
+    val textHeight = fontMetrics.getHeight
+    val textX = x + (cellSize - textWidth) / 2
+    val textY = y + (cellSize - textHeight) / 2 - 5
+
+    g.drawString(fieldText, textX, textY)
   }
 
   val playerImages: Map[Int, Image] = Map(
