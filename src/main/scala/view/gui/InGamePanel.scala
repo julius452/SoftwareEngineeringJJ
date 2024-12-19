@@ -342,54 +342,18 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
               font = myFont
             }
           } else {
-            validMoves.foreach { move =>
-              val output = s"${move._2}"
-              if (counter == 0) {
-                val buttonMove1 = new Button(output) {
-                  font = myFont
-                }
-                contents += buttonMove1
-                listenTo(buttonMove1)
-                reactions += {
-                  case ButtonClicked(`buttonMove1`) => {
-                    controller.eval("1")
-                  }
-                }
-              } else if (counter == 1) {
-                val buttonMove2 = new Button(output) {
-                  font = myFont
-                }
-                contents += buttonMove2
-                listenTo(buttonMove2)
-                reactions += {
-                  case ButtonClicked(`buttonMove2`) => {
-                    controller.eval("2")
-                  }
-                }
-              } else if (counter == 2) {
-                val buttonMove3 = new Button(output) {
-                  font = myFont
-                }
-                contents += buttonMove3
-                listenTo(buttonMove3)
-                reactions += {
-                  case ButtonClicked(`buttonMove3`) => {
-                    controller.eval("3")
-                  }
-                }
-              } else if (counter == 3) {
-                val buttonMove4 = new Button(output) {
-                  font = myFont
-                }
-                contents += buttonMove4
-                listenTo(buttonMove4)
-                reactions += {
-                  case ButtonClicked(`buttonMove4`) => {
-                    controller.eval("4")
-                  }
-                }
+            // Dynamische Button-Zuweisung
+            validMoves.zipWithIndex.foreach { case ((index, description), idx) =>
+              val button = new Button(description) {
+                font = myFont
               }
-              counter += 1
+              listenTo(button)
+              contents += button
+
+              reactions += {
+                case ButtonClicked(`button`) =>
+                  controller.eval((index + 1).toString) // Index direkt verwenden
+              }
             }
           }
         }

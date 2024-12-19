@@ -41,17 +41,36 @@ class RuleController() {
   }
 
   def validateMove(piece: Piece, gameState: GameState): Boolean = {
+    val startField = gameState.board.getFields()(piece.player.getStartPosition())
     if (!piece.getIsOnField() && gameState.dice.getLastRoll() == 6) {
-      if(isStartFieldFree(piece.player, gameState)){
-        return true
+
+      if(startField.getIsOccupied()){
+        val occupyingPlayer = startField.getPiece().get.player
+        if(!isStartFieldFree(piece.player, gameState) && !occupyingPlayer.getPlayerId().equals(piece.player.getPlayerId())) {
+          return true
+        } else {
+          return false
+        }
       } else {
-        return false
+        return true
       }
+
     }
 
     // checken ob man mit der gewürfelten Zahl ins Haus kommt
     if (piece.getIsOnField()) {
-      if(gameState.dice.getLastRoll() == 6 && isStartFieldFree(piece.player, gameState)) {
+      val remainingPiecesInStartHouse = piece.player.getPieces().count(!_.getIsOnField())
+      if (startField.getIsOccupied()) {
+        val occupyingPlayer = startField.getPiece().get.player
+        if (!occupyingPlayer.getPlayerId().equals(piece.player.getPlayerId())) {
+          return true
+        }
+      }
+      if (remainingPiecesInStartHouse > 0 && !isStartFieldFree(piece.player, gameState) && piece.getField().getPosition() != piece.player.getStartPosition()) {
+        return false
+      }
+
+      if(gameState.dice.getLastRoll() == 6 && isStartFieldFree(piece.player, gameState) && remainingPiecesInStartHouse != 0) {
         return false
       }
       val landingIndex = (piece.getField().getPosition() + gameState.dice.getLastRoll()) % gameState.board.getFields().length
