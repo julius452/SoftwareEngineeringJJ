@@ -29,6 +29,14 @@ class GameBoardController {
         val newIndex = (piece.getField().getPosition() + steps) % fields.length
         val landingField = fields(newIndex)
 
+        if (landingField.getIsOccupied()) {
+          val occupyingPiece = landingField.getPiece().get
+
+          if (occupyingPiece.player != piece.player) {
+            throwPlayerOut(occupyingPiece.player, piece, landingField, gameState)
+          }
+        }
+
         piece.getField().setIsOccupied(false)
         landingField.setIsOccupied(true)
 
@@ -60,6 +68,9 @@ class GameBoardController {
     val throwingPiece = landingField.getPiece()
     val returnToStartField = throwingPlayer.getStartHouse()(throwingPiece.get.id - 1)
 
+    landingField.setIsOccupied(false)
+    landingField.setPiece(None)
+
     returnToStartField.setIsOccupied(true)
     returnToStartField.setPiece(throwingPiece)
 
@@ -76,5 +87,6 @@ class GameBoardController {
 
     piece.setTravelFields(traveledFields + gameState.dice.getLastRoll())
     landingField.setPiece(Some(piece))
+    landingField.setIsOccupied(true)
   }
 }
