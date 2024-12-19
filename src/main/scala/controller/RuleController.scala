@@ -51,6 +51,9 @@ class RuleController() {
 
     // checken ob man mit der gewürfelten Zahl ins Haus kommt
     if (piece.getIsOnField()) {
+      if(gameState.dice.getLastRoll() == 6 && isStartFieldFree(piece.player, gameState)) {
+        return false
+      }
       val landingIndex = (piece.getField().getPosition() + gameState.dice.getLastRoll()) % gameState.board.getFields().length
       val landingField = gameState.board.getFields()(landingIndex)
       if (landingField.getIsOccupied()) {

@@ -1,5 +1,6 @@
 package controller
 
+import view.gui.WelcomePanel
 import command.{CommandManager, MovePieceCommand}
 import model.{Field, GameState, Player}
 import state.{DetermineStartPlayerPhase, GameOverPhase, GamePhase, InGamePhase, PlayerSetupPhase, StartPhase}
@@ -55,6 +56,8 @@ class MainController(var gameState: GameState) extends ControllerInterface {
     }
   }
 
+
+
   override def getCurrentPlayerSetUpNumber: Int = gameState.getterPlayersList().size + 1
   override def getCurrentPlayerName: String = gameState.getCurrentPlayer().getPlayerName()
   override def getLastRoll: Int = gameState.gameDice.getLastRoll()
@@ -70,6 +73,8 @@ class MainController(var gameState: GameState) extends ControllerInterface {
   override def getLastPlayer: Player = gameState.lastTurn()
   override def getPlayerNameByPlayerNumber(playerNumber: Int): String = gameState.getPlayerNameByPlayerNumber(playerNumber)
 }
+
+
 
 object MainController{
   def toInt(s: String): Option[Int] = {

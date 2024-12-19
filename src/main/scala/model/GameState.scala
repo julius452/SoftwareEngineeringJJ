@@ -1,5 +1,6 @@
 package model
 
+
 import controller.RuleController
 import memento.Caretaker
 import view.ConsoleView
@@ -140,6 +141,8 @@ case class GameState(gameDice: Dice, gameBoard: GameBoard) extends ModelInterfac
 
     startingPlayerTracker = newList
   }
+
+
 
   def setStartingPlayer(): Unit = {
     val (startingPlayer, _) = startingPlayerTracker.maxBy(_._2)

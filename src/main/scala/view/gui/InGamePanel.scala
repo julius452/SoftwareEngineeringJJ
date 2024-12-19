@@ -284,6 +284,15 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     }
   }
 
+  def hasPiecesInStarthouse(playerNumber: Int): Boolean = {
+    (0 to 3).exists { index =>
+      val startHouseField = controller.getStartHouseByPlayerAndIndex(playerNumber, index)
+      startHouseField.getIsOccupied()
+    }
+  }
+
+
+
   // Würfel Button
   val rollButton = new Button("Würfeln") {
     font = myFont
@@ -305,6 +314,7 @@ class InGamePanel(controller: ControllerInterface) extends BorderPanel {
     reactions += {
       case ButtonClicked(`rollButton`) => {
         controller.eval("w")
+
       }
     }
   }
